@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
+class PesertaExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     protected $search;
     protected $kelasId;
@@ -45,25 +45,23 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyl
     {
         return [
             'No',
-            'NIS',
-            'Nama Siswa',
+            'Nama Peserta',
             'Jenis Kelamin',
             'Kelas',
             'Email',
         ];
     }
 
-    public function map($siswa): array
+    public function map($peserta): array
     {
         $this->rowNumber++;
 
         return [
             $this->rowNumber,
-            $siswa->nis,
-            $siswa->nama,
-            $siswa->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
-            $siswa->kelas->nama_kelas ?? '-',
-            $siswa->user->email ?? '-',
+            $peserta->nama,
+            $peserta->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+            $peserta->kelas->nama_kelas ?? '-',
+            $peserta->user->email ?? '-',
         ];
     }
 
@@ -82,6 +80,6 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     public function title(): string
     {
-        return 'Data Siswa';
+        return 'Data Peserta';
     }
 }

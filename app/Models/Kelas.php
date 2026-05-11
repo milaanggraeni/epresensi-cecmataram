@@ -11,7 +11,7 @@ class Kelas extends Model
 
     protected $fillable = [
         'nama_kelas',
-        'jumlah_siswa',
+        'jumlah_peserta',
         'wali_kelas',
     ];
 

@@ -26,7 +26,7 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
     public function collection()
     {
-        $query = Absensi::with('siswa.kelas')
+        $query = Absensi::with('peserta.kelas')
             ->whereMonth('tanggal', $this->bulan)
             ->whereYear('tanggal', $this->tahun)
             ->orderBy('tanggal', 'desc')
@@ -34,9 +34,8 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
         if ($this->search) {
             $search = $this->search;
-            $query->whereHas('siswa', function ($q) use ($search) {
-                $q->where('nama', 'LIKE', '%' . $search . '%')
-                    ->orWhere('nis', 'LIKE', '%' . $search . '%');
+            $query->whereHas('peserta', function ($q) use ($search) {
+                $q->where('nama', 'LIKE', '%' . $search . '%');
             });
         }
 
@@ -48,8 +47,7 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             'No',
             'Tanggal',
-            'NIS',
-            'Nama Siswa',
+            'Nama Peserta',
             'Kelas',
             'Status',
             'Keterangan',
@@ -63,9 +61,8 @@ class AbsensiExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             $this->rowNumber,
             \Carbon\Carbon::parse($absensi->tanggal)->format('d-m-Y'),
-            $absensi->siswa->nis ?? '-',
-            $absensi->siswa->nama ?? '-',
-            $absensi->siswa->kelas->nama_kelas ?? '-',
+            $absensi->peserta->nama ?? '-',
+            $absensi->peserta->kelas->nama_kelas ?? '-',
             ucfirst($absensi->status),
             $absensi->keterangan ?? '-',
         ];
