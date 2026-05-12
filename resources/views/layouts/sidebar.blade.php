@@ -9,8 +9,8 @@
             <img src="{{ asset('img/logo.png') }}" width="100px;" alt="">
         </div>
         <div class="sidebar-logo-text overflow-hidden transition-all duration-300">
-            <h1 class="text-white font-bold text-base leading-tight tracking-tight">Absensi Siswa</h1>
-            <p class="text-primary-300 text-[11px] font-medium tracking-wider uppercase">SMP IT Yapura</p>
+            <h1 class="text-white font-bold text-base leading-tight tracking-tight">E-Presensi</h1>
+            <p class="text-primary-300 text-[11px] font-medium tracking-wider uppercase">CECMataram</p>
         </div>
     </div>
 
@@ -116,6 +116,22 @@
                                 <i class='bx bx-list-check text-lg'></i>
                             </div>
                             <span class="sidebar-label transition-all duration-300">Jadwal Pelajaran</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ Route::has('hariLibur') ? route('hariLibur') : '#' }}"
+                            class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                              {{ request()->routeIs('hariLibur.*')
+                                  ? 'bg-primary-600/20 text-primary-400 menu-active'
+                                  : 'text-dark-300 hover:bg-white/5 hover:text-white' }}">
+                            <div
+                                class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200
+                                    {{ request()->routeIs('hariLibur.*')
+                                        ? 'bg-primary-600/30 text-primary-400'
+                                        : 'bg-white/5 text-dark-400 group-hover:bg-white/10 group-hover:text-white' }}">
+                                <i class='bx bx-list-check text-lg'></i>
+                            </div>
+                            <span class="sidebar-label transition-all duration-300">Hari Libur</span>
                         </a>
                     </li>
                 </ul>

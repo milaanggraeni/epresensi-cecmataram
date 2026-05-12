@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="Login - Absensi Siswa SMP IT Yapura">
-    <title>Login — Absensi Siswa SMP IT Yapura</title>
+    <meta name="description" content="Login - E-Presensi CECMataram">
+    <title>Login — E-Presensi CECMataram</title>
 
     {{-- Google Fonts: Inter --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -297,11 +297,11 @@
                     <img src="{{ asset('img/logo.png') }}" alt="">
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-black tracking-tight fade-in-up fade-in-up-delay-1">
-                    SMP IT Yapura
+                    E-Presensi CECMataram
                 </h1>
                 <p
                     class="text-primary-300/80 text-sm mt-2 max-w-xs mx-auto leading-relaxed fade-in-up fade-in-up-delay-2">
-                    Absensi Siswa SMP IT Yapura
+                    E-Presensi CECMataram
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3 fade-in-up fade-in-up-delay-3">
                     <div class="w-8 h-px bg-primary-400/30"></div>

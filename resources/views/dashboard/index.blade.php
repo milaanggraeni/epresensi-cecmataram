@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard')
 @section('page-title', 'Dashboard')
-@section('page-subtitle', 'Absensi Peserta - SMP IT Yapura')
+@section('page-subtitle', 'Absensi Peserta - E-Presensi CECMataram')
 
 @section('content')
 
@@ -27,7 +27,7 @@
                         Selamat Datang, {{ Auth::user()->name ?? 'User' }}! 👋
                     </h1>
                     <p class="text-primary-200 mt-1 text-sm sm:text-base max-w-xl">
-                        Sistem Absensi Peserta SMP IT Yapura
+                        Sistem E-Presensi CECMataram
                     </p>
                 </div>
                 <div class="flex-shrink-0">
@@ -355,7 +355,68 @@
     {{-- TAMPILAN KHUSUS peserta --}}
     @if (Auth::user()->role === 'peserta' && isset($peserta))
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {{-- Card Data Diri --}}
+            <div class="lg:col-span-2 glass-card rounded-2xl border border-dark-200/50 p-6">
+                <h3 class="text-lg font-bold text-dark-800 mb-4 flex items-center gap-2">
+                    <i class='bx bx-user-circle text-primary-500 text-2xl'></i>
+                    Profil Peserta
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
+                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Nama Lengkap</p>
+                        <p class="text-dark-800 font-semibold">{{ $peserta->nama }}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
+                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Email</p>
+                        <p class="text-dark-800 font-semibold">{{ Auth::user()->email }}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
+                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Kelas</p>
+                        <p class="text-dark-800 font-semibold">{{ $peserta->kelas->nama_kelas ?? '-' }}</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
+                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Jenis Kelamin</p>
+                        <p class="text-dark-800 font-semibold">
+                            {{ $peserta->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                    </div>
+                </div>
+            </div>
 
+            {{-- Card QR Code --}}
+            <div
+                class="glass-card rounded-2xl border border-primary-100 bg-gradient-to-b from-white to-primary-50/30 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                <!-- Background Decoration -->
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-primary-500/10">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl -ml-8 -mb-8 transition-all duration-500 group-hover:bg-indigo-500/10">
+                </div>
+
+                <div class="relative z-10 w-full flex flex-col items-center">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-3 shadow-inner">
+                        <i class='bx bx-qr-scan text-xl'></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-dark-800 mb-1 uppercase tracking-widest">ID Card Digital</h3>
+                    <p class="text-xs text-dark-500 mb-5">Scan saat kelas untuk absensi</p>
+
+                    <div
+                        class="relative p-1 rounded-2xl bg-gradient-to-br from-primary-200 via-indigo-100 to-primary-200 mb-6 shadow-sm">
+                        <div
+                            class="bg-white p-3.5 rounded-[14px] transform transition-transform duration-300 group-hover:scale-105">
+                            <img src="{{ asset('qrcodes/' . $peserta->qrcode) }}" alt="QR Code"
+                                class="w-36 h-36 object-contain">
+                        </div>
+                    </div>
+
+                    <a href="{{ route('dashboard.download.idcard') }}"
+                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-1">
+                        <i class='bx bxs-file-pdf text-lg animate-bounce'></i>
+                        Cetak ID Card (PDF)
+                    </a>
+                </div>
+            </div>
             {{-- Card Waktu & Tanggal Realtime --}}
             <div
                 class="glass-card rounded-2xl border border-dark-200/50 p-6 flex flex-col justify-center items-center text-center">

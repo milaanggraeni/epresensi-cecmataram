@@ -54,7 +54,8 @@ class DashboardController extends Controller
 
 
         if ($user->role === 'peserta') {
-            $peserta = Peserta::where('user_id', $user->id)->first();
+            // $peserta = Peserta::where('user_id', $user->id)->first();
+            $peserta = Peserta::with('kelas')->where('user_id', $user->id)->first();
             $data['peserta'] = $peserta;
 
             if ($peserta) {
@@ -67,6 +68,8 @@ class DashboardController extends Controller
                 $data['tanggalHariIni'] = \Carbon\Carbon::now()->isoFormat('dddd, D MMMM Y');
             }
         }
+
+
         if ($user->role === 'tutor') {
             $tutor = Tutor::where('user_id', $user->id)->first();
             $data['tutor'] = $tutor;
@@ -159,5 +162,24 @@ class DashboardController extends Controller
             new AbsensiExport($bulan, $tahun, $search),
             "Rekap_Absensi_{$namaBulan}_{$tahun}.xlsx"
         );
+    }
+
+    /**
+     * Download ID Card PDF for Peserta
+     */
+    public function downloadIdCard()
+    {
+        $user = Auth::user();
+        if ($user->role !== 'peserta') {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+
+        $peserta = Peserta::with('kelas')->where('user_id', $user->id)->firstOrFail();
+
+        // Ukuran kertas custom (lebar 240pt, tinggi 370pt) menyesuaikan desain CSS
+        $pdf = Pdf::loadView('exports.id-card-pdf', compact('peserta'))
+            ->setPaper([0, 0, 240, 370], 'portrait');
+
+        return $pdf->download("ID_Card_" . \Illuminate\Support\Str::slug($peserta->nama) . ".pdf");
     }
 }

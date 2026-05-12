@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Absensi;
 use App\Models\Jadwal;
 use App\Models\LokasiSekolah;
+use App\Models\HariLibur;
 use App\Models\Peserta;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
@@ -26,6 +27,49 @@ class AbsensiController extends Controller
             return redirect()->route('dashboard')->with('error', 'Data peserta tidak ditemukan.');
         }
 
+        // Cek Hari Libur
+        $hariLibur = HariLibur::whereDate('tanggal', date('Y-m-d'))->first();
+        if ($hariLibur) {
+            // Cek apakah sudah digenerate absensi libur untuk hari ini
+            $cekLiburGenerated = Absensi::whereDate('tanggal', date('Y-m-d'))
+                ->where('status', 'Libur')
+                ->exists();
+
+            if (!$cekLiburGenerated) {
+                // Generate absensi libur untuk semua peserta
+                $semuaPeserta = Peserta::all();
+                $dataAbsensi = [];
+                $now = now();
+                foreach ($semuaPeserta as $p) {
+                    $sudahAda = Absensi::where('peserta_id', $p->id)
+                        ->whereDate('tanggal', date('Y-m-d'))
+                        ->exists();
+                    if (!$sudahAda) {
+                        $dataAbsensi[] = [
+                            'peserta_id' => $p->id,
+                            'tanggal' => date('Y-m-d'),
+                            'jam_masuk' => null,
+                            // 'jam_keluar' => null,
+                            'status' => 'hadir',
+                            'keterangan' => 'hadir ' . $hariLibur->keterangan,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+                }
+                if (count($dataAbsensi) > 0) {
+                    Absensi::insert($dataAbsensi);
+                }
+            }
+
+            $absenHariIni = Absensi::where('peserta_id', $peserta->id)
+                ->whereDate('tanggal', date('Y-m-d'))
+                ->first();
+
+            $lokasiSekolah = LokasiSekolah::first();
+            return view('absensi.index', compact('peserta', 'lokasiSekolah', 'absenHariIni', 'hariLibur'));
+        }
+
         $lokasiSekolah = LokasiSekolah::first();
         if (!$lokasiSekolah) {
             return redirect()->route('dashboard')->with('error', 'Koordinat Lokasi Sekolah belum diatur oleh Admin.');
@@ -35,7 +79,8 @@ class AbsensiController extends Controller
             ->whereDate('tanggal', date('Y-m-d'))
             ->first();
 
-        return view('absensi.index', compact('peserta', 'lokasiSekolah', 'absenHariIni'));
+        $hariLibur = null;
+        return view('absensi.index', compact('peserta', 'lokasiSekolah', 'absenHariIni', 'hariLibur'));
     }
 
     public function store(Request $request)
@@ -63,9 +108,20 @@ class AbsensiController extends Controller
 
         $lat = $request->latitude;
         $lng = $request->longitude;
+        $scannedQr = $request->qrcode;
 
         if (!$lat || !$lng) {
             return response()->json(['success' => false, 'message' => 'Lokasi Anda tidak terdeteksi.'], 400);
+        }
+
+        if (!$scannedQr) {
+            return response()->json(['success' => false, 'message' => 'QR Code wajib dipindai.'], 400);
+        }
+
+        $pesertaQr = str_replace('.svg', '', $peserta->qrcode);
+
+        if ($scannedQr !== $pesertaQr) {
+            return response()->json(['success' => false, 'message' => 'QR Code tidak valid atau bukan milik Anda!'], 400);
         }
 
         // Haversine formula backend validation

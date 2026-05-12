@@ -21,7 +21,8 @@ return new class extends Migration
                 'hadir',
                 'izin',
                 'sakit',
-                'alfa'
+                'alfa',
+                'libur'
             ])->default('hadir');
             $table->string('keterangan')->nullable();
             $table->double('latitude')->nullable();

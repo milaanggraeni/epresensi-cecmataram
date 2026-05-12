@@ -127,7 +127,14 @@
                         --:--:--
                     </div>
 
-                    @if (!$absenHariIni)
+                    @if (isset($hariLibur))
+                        <div
+                            class="p-5 rounded-xl bg-indigo-50 border border-indigo-200 flex flex-col items-center justify-center gap-2 mb-2">
+                            <i class='bx bx-calendar-star text-4xl text-indigo-500'></i>
+                            <h4 class="font-bold text-indigo-700">Hari Libur</h4>
+                            <p class="text-xs text-indigo-600 text-center">Hari ini adalah hari libur ({{ $hariLibur->keterangan }}). Anda tidak perlu melakukan rekam kehadiran.</p>
+                        </div>
+                    @elseif (!$absenHariIni)
                         <div class="p-4 rounded-xl mb-6 flex flex-col items-center justify-center gap-2 border transition-all duration-300"
                             id="status-panel">
                             <i class='bx bx-loader-alt animate-spin text-3xl text-dark-400'></i>
@@ -140,6 +147,7 @@
                             <span>Menunggu Lokasi</span>
                         </button>
                         <p id="distance-info" class="mt-3 text-xs text-dark-400 hidden"></p>
+
                     @else
                         <div
                             class="p-5 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-col items-center justify-center gap-2 mb-2">
@@ -183,6 +191,33 @@
         </div>
     @endif
 
+    <!-- Modal Scanner -->
+    <div id="modal-scanner" class="fixed inset-0 z-[100] hidden" style="position: fixed; z-index: 9999;">
+        <div class="fixed inset-0 bg-dark-950/80 backdrop-blur-sm transition-opacity"
+            onclick="closeModalScanner()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                    <div
+                        class="bg-dark-50/50 px-6 py-4 border-b border-dark-100 flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-dark-800">Scan ID Card Anda</h3>
+                        <button type="button" onclick="closeModalScanner()"
+                            class="text-dark-400 hover:text-rose-500">
+                            <i class='bx bx-x text-2xl'></i>
+                        </button>
+                    </div>
+                    <div class="p-6 text-center">
+                        <div id="qr-reader"
+                            class="w-full mb-4 overflow-hidden rounded-xl border border-dark-200 shadow-inner"
+                            style="min-height: 250px;"></div>
+                        <p class="text-sm text-dark-500" id="qr-instructions">Posisikan QR Code di dalam
+                            kotak untuk verifikasi absensi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -190,6 +225,8 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- HTML5 QR Code -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <script>
         // Live Clock
@@ -217,11 +254,23 @@
                 let currentLng = null;
                 let currentDistance = null;
 
-                // Elemen UI
                 const btnAbsen = document.getElementById('btn-absen');
                 const statusPanel = document.getElementById('status-panel');
                 const pDistanceInfo = document.getElementById('distance-info');
                 const mapLoading = document.getElementById('map-loading');
+
+                let html5Qrcode = null;
+                const modalScanner = document.getElementById('modal-scanner');
+
+                window.closeModalScanner = function() {
+                    modalScanner.classList.add('hidden');
+                    if(html5Qrcode) {
+                        html5Qrcode.stop().then(() => {
+                            html5Qrcode.clear();
+                            html5Qrcode = null;
+                        }).catch(err => console.error(err));
+                    }
+                }
 
                 // Inisialisasi Map
                 const map = L.map('map').setView([schoolLat, schoolLng], 16);
@@ -384,73 +433,91 @@
                     });
                 }
 
-                // Proses Absen (AJAX)
+                // Proses Absen (Buka Modal Scanner)
                 btnAbsen.addEventListener('click', function() {
-                    if (!currentLat || !currentLng) return;
+                    if (!currentLat || !currentLng || currentDistance > allowedRadius) return;
 
-                    // Loading State
-                    const originalText = this.innerHTML;
-                    this.disabled = true;
-                    this.innerHTML =
-                        `<i class='bx bx-loader-alt animate-spin text-2xl'></i><span>Memproses...</span>`;
+                    // Tampilkan modal
+                    modalScanner.classList.remove('hidden');
 
-                    fetch('{{ route('absensi.store') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .getAttribute('content'),
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                latitude: currentLat,
-                                longitude: currentLng
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: data.message,
-                                    confirmButtonColor: '#10b981',
-                                    customClass: {
-                                        popup: 'font-inter rounded-2xl',
-                                        confirmButton: 'rounded-xl'
-                                    }
-                                }).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal Absen',
-                                    text: data.message,
-                                    confirmButtonColor: '#ef4444',
-                                    customClass: {
-                                        popup: 'font-inter rounded-2xl',
-                                        confirmButton: 'rounded-xl'
-                                    }
-                                });
-                                // Reset button
-                                this.disabled = false;
-                                this.innerHTML = originalText;
+                    if (!html5Qrcode) {
+                        let isProcessingScan = false;
+                        function onScanSuccess(decodedText, decodedResult) {
+                            if (isProcessingScan) return;
+                            isProcessingScan = true;
+
+                            if(html5Qrcode) {
+                                try { html5Qrcode.pause(); } catch(e) {}
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops!',
-                                text: 'Terjadi kesalahan sistem.',
-                                customClass: {
-                                    popup: 'font-inter rounded-2xl'
-                                }
-                            });
-                            this.disabled = false;
-                            this.innerHTML = originalText;
+                            document.getElementById('qr-instructions').innerHTML =
+                                `<i class='bx bx-loader-alt animate-spin text-xl'></i> Memverifikasi data...`;
+
+                            // Send to backend (QR Code + Lokasi)
+                            fetch('{{ route('absensi.store') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector(
+                                            'meta[name="csrf-token"]').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        qrcode: decodedText,
+                                        latitude: currentLat,
+                                        longitude: currentLng
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    closeModalScanner();
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Berhasil!',
+                                            text: data.message,
+                                            confirmButtonColor: '#10b981',
+                                            customClass: {
+                                                popup: 'font-inter rounded-2xl',
+                                                confirmButton: 'rounded-xl'
+                                            }
+                                        }).then(() => window.location.reload());
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal Absen',
+                                            text: data.message,
+                                            confirmButtonColor: '#ef4444',
+                                            customClass: {
+                                                popup: 'font-inter rounded-2xl',
+                                                confirmButton: 'rounded-xl'
+                                            }
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    closeModalScanner();
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops!',
+                                        text: 'Terjadi kesalahan sistem.',
+                                        customClass: {
+                                            popup: 'font-inter rounded-2xl'
+                                        }
+                                    });
+                                });
+                        }
+
+                        html5Qrcode = new Html5Qrcode("qr-reader");
+                        html5Qrcode.start(
+                            { facingMode: "environment" },
+                            { fps: 10, qrbox: { width: 250, height: 250 } },
+                            onScanSuccess
+                        ).catch(err => {
+                            console.error(err);
+                            document.getElementById('qr-instructions').innerHTML = 
+                                `<span class="text-rose-500"><i class='bx bx-error-circle'></i> Akses kamera ditolak atau tidak ditemukan. Pastikan memberi izin kamera pada browser.</span>`;
                         });
+                    }
                 });
 
             });

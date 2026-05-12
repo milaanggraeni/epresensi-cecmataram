@@ -3,6 +3,7 @@
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HariLiburController;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -35,6 +36,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/dashboard/absensi/{id}/delete', [DashboardController::class, 'deleteAbsensi'])->name('dashboard.absensi.delete');
     Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.export.pdf');
     Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])->name('dashboard.export.excel');
+    Route::get('/dashboard/download-id-card', [DashboardController::class, 'downloadIdCard'])->name('dashboard.download.idcard');
     Route::get('/proseslogout', [AuthController::class, 'proseslogout'])->name('proseslogout');
 
     // Profile
@@ -100,4 +102,11 @@ Route::middleware(['auth:web'])->group(function () {
     // Izin / Sakit
     Route::get('/izin-siswa', [IzinController::class, 'index'])->name('izin');
     Route::post('/izin-siswa', [IzinController::class, 'store'])->name('izin.store');
+
+    // Hari Libur
+    Route::get('/hari-libur', [HariLiburController::class, 'index'])->name('hariLibur');
+    Route::post('/hari-libur', [HariLiburController::class, 'store'])->name('hariLibur.store');
+    Route::post('/hari-libur/edit', [HariLiburController::class, 'edit'])->name('hariLibur.edit');
+    Route::post('/hari-libur/{id}', [HariLiburController::class, 'update'])->name('hariLibur.update');
+    Route::post('/hari-libur/delete/{id}', [HariLiburController::class, 'destroy'])->name('hariLibur.delete');
 });
