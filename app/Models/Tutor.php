@@ -14,6 +14,9 @@ class Tutor extends Model
         'nama',
         'mapel',
         'jenis_kelamin',
+        'alamat',
+        'nomor_hp',
+        'foto',
     ];
 
     public function user()

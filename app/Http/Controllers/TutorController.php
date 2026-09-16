@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
 
 class TutorController extends Controller
 {
@@ -32,8 +33,11 @@ class TutorController extends Controller
             'nama' => 'required|string|max:255',
             'mapel' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'alamat' => 'required|string|max:500',
+            'nomor_hp' => 'nullable|string|max:25',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = User::create([
@@ -43,11 +47,21 @@ class TutorController extends Controller
             'role' => 'tutor',
         ]);
 
+        // Handle photo upload
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoFile = $request->file('foto');
+            $fotoPath = $fotoFile->store('tutor', 'public');
+        }
+
         Tutor::create([
             'user_id' => $user->id,
             'nama' => $request->nama,
             'mapel' => $request->mapel,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'alamat' => $request->alamat,
+            'nomor_hp' => $request->nomor_hp,
+            'foto' => $fotoPath,
         ]);
 
         return redirect()->back()->with('success', 'Data Tutor berhasil ditambahkan');
@@ -67,8 +81,11 @@ class TutorController extends Controller
             'nama' => 'required|string|max:255',
             'mapel' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'alamat' => 'required|string|max:500',
+            'nomor_hp' => 'nullable|string|max:25',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($tutor->user_id)],
             'password' => 'nullable|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $userData = [
@@ -82,10 +99,24 @@ class TutorController extends Controller
 
         $tutor->user->update($userData);
 
+        // Handle photo upload
+        $fotoPath = $tutor->foto;
+        if ($request->hasFile('foto')) {
+            // Delete old photo if exists
+            if ($tutor->foto && File::exists(storage_path('app/public/' . $tutor->foto))) {
+                File::delete(storage_path('app/public/' . $tutor->foto));
+            }
+            $fotoFile = $request->file('foto');
+            $fotoPath = $fotoFile->store('tutor', 'public');
+        }
+
         $tutor->update([
             'nama' => $request->nama,
             'mapel' => $request->mapel,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'alamat' => $request->alamat,
+            'nomor_hp' => $request->nomor_hp,
+            'foto' => $fotoPath,
         ]);
 
         return redirect()->back()->with('success', 'Data tutor berhasil diperbarui');

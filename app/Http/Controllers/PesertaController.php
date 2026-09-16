@@ -14,6 +14,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PesertaController extends Controller
@@ -25,8 +26,7 @@ class PesertaController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('nama', 'LIKE', '%' . $search . '%')
-                    ->orWhere('nis', 'LIKE', '%' . $search . '%');
+                $q->where('nama', 'LIKE', '%' . $search . '%');
             });
         }
 
@@ -47,6 +47,10 @@ class PesertaController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'alamat' => 'nullable|string',
+            'nama_wali' => 'nullable|string|max:255',
+            'nomor_hp_wali' => 'nullable|string|max:20',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = User::create([
@@ -66,13 +70,29 @@ class PesertaController extends Controller
 
         QrCode::format('svg')->size(300)->generate($qrCodeString, $qrCodePath . '/' . $qrCodeFileName);
 
-        Peserta::create([
+        // Handle photo upload only when the column exists
+        $fotoPath = null;
+        if (Schema::hasColumn('pesertas', 'foto') && $request->hasFile('foto')) {
+            $fotoFile = $request->file('foto');
+            $fotoPath = $fotoFile->store('peserta', 'public');
+        }
+
+        $pesertaData = [
             'user_id' => $user->id,
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'kelas_id' => $request->kelas_id,
             'qrcode' => $qrCodeFileName,
-        ]);
+            'alamat' => $request->alamat,
+            'nama_wali' => $request->nama_wali,
+            'nomor_hp_wali' => $request->nomor_hp_wali,
+        ];
+
+        if (Schema::hasColumn('pesertas', 'foto') && $fotoPath !== null) {
+            $pesertaData['foto'] = $fotoPath;
+        }
+
+        Peserta::create($pesertaData);
 
         return redirect()->back()->with('success', 'Data Peserta berhasil ditambahkan');
     }
@@ -94,6 +114,10 @@ class PesertaController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($peserta->user_id)],
             'password' => 'nullable|min:6',
+            'alamat' => 'nullable|string',
+            'nama_wali' => 'nullable|string|max:255',
+            'nomor_hp_wali' => 'nullable|string|max:20',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $userData = [
@@ -107,11 +131,29 @@ class PesertaController extends Controller
 
         $peserta->user->update($userData);
 
-        $peserta->update([
+        $pesertaData = [
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
             'kelas_id' => $request->kelas_id,
-        ]);
+            'alamat' => $request->alamat,
+            'nama_wali' => $request->nama_wali,
+            'nomor_hp_wali' => $request->nomor_hp_wali,
+        ];
+
+        if (Schema::hasColumn('pesertas', 'foto')) {
+            $fotoPath = $peserta->foto;
+            if ($request->hasFile('foto')) {
+                // Delete old photo if exists
+                if ($peserta->foto && File::exists(storage_path('app/public/' . $peserta->foto))) {
+                    File::delete(storage_path('app/public/' . $peserta->foto));
+                }
+                $fotoFile = $request->file('foto');
+                $fotoPath = $fotoFile->store('peserta', 'public');
+            }
+            $pesertaData['foto'] = $fotoPath;
+        }
+
+        $peserta->update($pesertaData);
 
         return redirect()->back()->with('success', 'Data Peserta berhasil diperbarui');
     }
@@ -163,7 +205,7 @@ class PesertaController extends Controller
         $pdf = Pdf::loadView('exports.peserta-pdf', compact('peserta', 'search', 'filterKelas'))
             ->setPaper('a4', 'landscape');
 
-        return $pdf->download('Data_Peserta.pdf');
+        return $pdf->stream('Data_Peserta.pdf');
     }
 
 

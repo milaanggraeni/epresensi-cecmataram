@@ -15,6 +15,10 @@ class Peserta extends Model
         'jenis_kelamin',
         'qrcode',
         'kelas_id',
+        'alamat',
+        'foto',
+        'nama_wali',
+        'nomor_hp_wali',
     ];
 
     public function user()

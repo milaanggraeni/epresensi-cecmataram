@@ -8,10 +8,11 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class='bx bx-book-open text-dark-400 text-lg'></i>
                 </div>
-                <input type="text" name="mata_pelajaran" id="mata_pelajaran_edit"
-                    value="{{ $jadwal->mata_pelajaran }}"
-                    class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50 text-dark-500 focus:outline-none cursor-not-allowed"
-                    readonly>
+                <select name="mata_pelajaran" id="mata_pelajaran_edit"
+                    class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all appearance-none"
+                    required>
+                    <option value="{{ $jadwal->mata_pelajaran }}">{{ $jadwal->mata_pelajaran }}</option>
+                </select>
             </div>
         </div>
 
@@ -55,6 +56,18 @@
             </div>
         </div>
 
+        {{-- Tanggal --}}
+        <div>
+            <label for="tanggal_edit" class="block text-sm font-medium text-dark-700 mb-1.5">Tanggal</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class='bx bx-calendar-event text-dark-400 text-lg'></i>
+                </div>
+                <input type="text" name="tanggal" id="tanggal_edit" value="{{ $jadwal->tanggal }}" placeholder="Pilih Tanggal"
+                    class="datepicker block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all appearance-none">
+            </div>
+        </div>
+
         {{-- Hari --}}
         <div>
             <label for="hari_edit" class="block text-sm font-medium text-dark-700 mb-1.5">Hari</label>
@@ -65,11 +78,23 @@
                 <select name="hari" id="hari_edit"
                     class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all appearance-none"
                     required>
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'] as $h)
+                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $h)
                         <option value="{{ $h }}" {{ $jadwal->hari == $h ? 'selected' : '' }}>
                             {{ $h }}</option>
                     @endforeach
                 </select>
+            </div>
+        </div>
+
+        {{-- Ruangan --}}
+        <div class="md:col-span-2">
+            <label for="ruangan_edit" class="block text-sm font-medium text-dark-700 mb-1.5">Ruangan</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class='bx bx-door-open text-dark-400 text-lg'></i>
+                </div>
+                <input type="text" name="ruangan" id="ruangan_edit" value="{{ $jadwal->ruangan }}" placeholder="Contoh: A1, Lab Komputer"
+                    class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all appearance-none">
             </div>
         </div>
 
@@ -118,11 +143,39 @@
     // Fungsi untuk update otomatis mata pelajaran saat tutor dipilih (di Modal Edit)
     function updateMapelEdit() {
         const selectTutor = document.getElementById('tutor_id_edit');
-        const inputMapel = document.getElementById('mata_pelajaran_edit');
+        const selectMapel = document.getElementById('mata_pelajaran_edit');
         const selectedOption = selectTutor.options[selectTutor.selectedIndex];
-        const mapel = selectedOption.getAttribute('data-mapel');
-        inputMapel.value = mapel || '';
+        const mapelString = selectedOption.getAttribute('data-mapel') || '';
+        
+        const currentSelectedMapel = selectMapel.value;
+        selectMapel.innerHTML = '<option value="">Pilih Mata Pelajaran</option>';
+
+        if (mapelString) {
+            const mapels = mapelString.split(',').map(m => m.trim()).filter(m => m !== '');
+            mapels.forEach(mapel => {
+                const option = document.createElement('option');
+                option.value = mapel;
+                option.textContent = mapel;
+                if (mapel === currentSelectedMapel) {
+                    option.selected = true;
+                }
+                selectMapel.appendChild(option);
+            });
+        }
     }
+
+    // Call it immediately to populate the options based on current tutor
+    setTimeout(() => {
+        const selectMapel = document.getElementById('mata_pelajaran_edit');
+        const savedMapel = "{{ $jadwal->mata_pelajaran }}";
+        selectMapel.value = savedMapel;
+        updateMapelEdit();
+        
+        // After options are built, ensure the saved mapel is selected if it wasn't captured correctly
+        Array.from(selectMapel.options).forEach(opt => {
+            if (opt.value === savedMapel) opt.selected = true;
+        });
+    }, 50);
 
     // Inisialisasi Flatpickr kembali karena konten ini dimuat via AJAX
     flatpickr(".timepicker", {

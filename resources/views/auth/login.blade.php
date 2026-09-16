@@ -26,30 +26,30 @@
                     },
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                            950: '#172554',
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdbb74',
+                            400: '#f97316',
+                            500: '#f59e0b',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                            950: '#431407',
                         },
                         dark: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
+                            50: '#09090b',
+                            100: '#121214',
+                            200: '#1b1b1f',
+                            300: '#27272a',
+                            400: '#52525b',
+                            500: '#a1a1aa',
+                            600: '#d4d4d8',
+                            700: '#e4e4e7',
+                            800: '#f4f4f5',
+                            900: '#ffffff',
+                            950: '#020202',
                         }
                     }
                 }
@@ -68,11 +68,11 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        /* Animated gradient background */
+        /* Animated gradient background - Black to orange glow */
         .animated-bg {
-            background: linear-gradient(-45deg, #0f172a, #1e3a8a, #1e40af, #172554);
+            background: linear-gradient(120deg, #000000, #09090b, #2b1000, #c84b00, #000000);
             background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            animation: gradientShift 18s ease infinite;
         }
 
         @keyframes gradientShift {
@@ -120,22 +120,23 @@
         /* Grid pattern overlay */
         .grid-pattern {
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
         }
 
-        /* Glass card */
+        /* Glass card - Dark theme with orange glow */
         .glass-login {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            box-shadow: 0 0 40px rgba(249, 115, 22, 0.18), inset 0 0 1px rgba(255, 255, 255, 0.08);
         }
 
         /* Input focus glow */
         .input-glow:focus-within {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3), 0 0 20px rgba(249, 115, 22, 0.18);
         }
 
         /* Fade-in up animation */
@@ -224,16 +225,17 @@
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
-            border: 2px solid #cbd5e1;
+            border: 2px solid rgba(249, 115, 22, 0.5);
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .custom-checkbox:checked {
-            background: #2563eb;
-            border-color: #2563eb;
+            background: linear-gradient(135deg, #f97316 0%, #facc15 100%);
+            border-color: #facc15;
         }
 
         .custom-checkbox:checked::after {
@@ -249,7 +251,7 @@
         }
 
         .custom-checkbox:focus {
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
         }
 
         /* Password toggle */
@@ -259,7 +261,7 @@
         }
 
         .password-toggle:hover {
-            color: #3b82f6;
+            color: #FCA311;
         }
     </style>
 </head>
@@ -279,11 +281,11 @@
         <div class="particle" style="width:6px;height:6px;left:85%;animation-duration:24s;animation-delay:2s;"></div>
         <div class="particle" style="width:9px;height:9px;left:92%;animation-duration:26s;animation-delay:6s;"></div>
 
-        {{-- Decorative Blurs --}}
-        <div class="absolute top-1/4 -left-20 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl"></div>
+        <!-- Decorative Blurs - Orange/Yellow theme -->
+        <div class="absolute top-1/4 -left-20 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl"></div>
         <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-600/5 rounded-full blur-3xl">
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl">
         </div>
 
         {{-- Login Container --}}
@@ -293,20 +295,19 @@
             <div class="text-center mb-8 fade-in-up">
                 {{-- Logo Icon --}}
                 <div
-                    class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-2xl shadow-primary-500/30 mb-5 scale-in">
-                    <img src="{{ asset('img/logo.png') }}" alt="">
+                    class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 shadow-2xl shadow-orange-500/20 mb-5 scale-in">
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo">
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-black tracking-tight fade-in-up fade-in-up-delay-1">
+                <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent tracking-tight fade-in-up fade-in-up-delay-1">
                     E-Presensi CECMataram
                 </h1>
                 <p
-                    class="text-primary-300/80 text-sm mt-2 max-w-xs mx-auto leading-relaxed fade-in-up fade-in-up-delay-2">
-                    E-Presensi CECMataram
+                    class="bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text text-transparent text-sm font-semibold mt-2 max-w-xs mx-auto leading-relaxed fade-in-up fade-in-up-delay-2">
+                    Sistem Presensi Digital
                 </p>
                 <div class="flex items-center justify-center gap-2 mt-3 fade-in-up fade-in-up-delay-3">
-                    <div class="w-8 h-px bg-primary-400/30"></div>
-
-                    <div class="w-8 h-px bg-primary-400/30"></div>
+                    <div class="w-8 h-px bg-orange-500/30"></div>
+                    <div class="w-8 h-px bg-orange-500/30"></div>
                 </div>
             </div>
 
@@ -316,8 +317,8 @@
 
                 {{-- Card Header --}}
                 <div class="mb-7">
-                    <h2 class="text-xl font-bold text-dark-800 tracking-tight">Masuk ke Sistem</h2>
-                    <p class="text-dark-400 text-sm mt-1">Silakan masukkan kredensial Anda untuk melanjutkan</p>
+                    <h2 class="text-xl font-bold text-red-500 tracking-tight">Masuk ke Sistem</h2>
+                    <p class="text-red-200 text-sm mt-1">Silakan masukkan kredensial Anda untuk melanjutkan</p>
                 </div>
 
                 {{-- Login Form --}}
@@ -326,20 +327,20 @@
 
                     {{-- Email Input --}}
                     <div class="space-y-1.5">
-                        <label for="email" class="block text-sm font-semibold text-dark-700">
+                        <label for="email" class="block text-sm font-semibold text-white">
                             Alamat Email
                         </label>
                         <div class="relative input-glow rounded-xl transition-all duration-200">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class='bx bx-envelope text-lg text-dark-400'></i>
+                                <i class='bx bx-envelope text-lg text-gray-400'></i>
                             </div>
                             <input type="email" id="email" name="email" value="{{ old('email') }}" required
                                 autocomplete="email" autofocus
-                                class="w-full pl-11 pr-4 py-3.5 bg-dark-50/80 border border-dark-200 rounded-xl text-sm text-dark-800 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:bg-white transition-all duration-200"
+                                class="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-zinc-800 rounded-xl text-sm text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all duration-200"
                                 placeholder="contoh@email.com">
                         </div>
                         @error('email')
-                            <p class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                            <p class="text-yellow-400 text-xs mt-1 flex items-center gap-1">
                                 <i class='bx bx-error-circle'></i> {{ $message }}
                             </p>
                         @enderror
@@ -347,24 +348,24 @@
 
                     {{-- Password Input --}}
                     <div class="space-y-1.5">
-                        <label for="password" class="block text-sm font-semibold text-dark-700">
+                        <label for="password" class="block text-sm font-semibold text-white">
                             Password
                         </label>
                         <div class="relative input-glow rounded-xl transition-all duration-200">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class='bx bx-lock-alt text-lg text-dark-400'></i>
+                                <i class='bx bx-lock-alt text-lg text-gray-400'></i>
                             </div>
                             <input type="password" id="password" name="password" required
                                 autocomplete="current-password"
-                                class="w-full pl-11 pr-12 py-3.5 bg-dark-50/80 border border-dark-200 rounded-xl text-sm text-dark-800 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:bg-white transition-all duration-200"
+                                class="w-full pl-11 pr-12 py-3.5 bg-white/5 border border-zinc-800 rounded-xl text-sm text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:bg-white/10 transition-all duration-200"
                                 placeholder="Masukkan password">
                             <button type="button" onclick="togglePassword()"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center password-toggle text-dark-400">
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center password-toggle text-gray-400">
                                 <i class='bx bx-hide text-lg' id="toggleIcon"></i>
                             </button>
                         </div>
                         @error('password')
-                            <p class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                            <p class="text-yellow-400 text-xs mt-1 flex items-center gap-1">
                                 <i class='bx bx-error-circle'></i> {{ $message }}
                             </p>
                         @enderror
@@ -375,13 +376,13 @@
                         <label for="remember" class="flex items-center gap-2.5 cursor-pointer select-none">
                             <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}
                                 class="custom-checkbox">
-                            <span class="text-sm text-dark-500">Ingat saya</span>
+                            <span class="text-sm text-gray-300">Ingat saya</span>
                         </label>
                     </div>
 
                     {{-- Submit Button --}}
                     <button type="submit" id="btnLogin"
-                        class="btn-shimmer w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-sm font-semibold rounded-xl shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 focus:outline-none focus:ring-2 focus:ring-primary-500/30 active:scale-[0.98] transition-all duration-200">
+                        class="btn-shimmer w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-red-600/25 hover:shadow-red-600/40 focus:outline-none focus:ring-2 focus:ring-red-500/30 active:scale-[0.98] transition-all duration-200">
                         <i class='bx bx-log-in text-lg'></i>
                         <span>Login</span>
                     </button>
@@ -391,11 +392,11 @@
 
             {{-- Footer --}}
             <div class="text-center mt-8 space-y-2 fade-in-up fade-in-up-delay-5">
-                <p class="text-primary-300/50 text-xs">
-                    &copy; {{ date('Y') }} SPK SMART BPNT — Desa Piloliyanga
+                <p class="text-gray-400/50 text-xs">
+                    &copy; {{ date('Y') }} E-Presensi CECMataram
                 </p>
-                <p class="text-primary-300/30 text-[11px]">
-                    Sistem Pendukung Keputusan Menggunakan Metode SMART
+                <p class="text-gray-400/30 text-[11px]">
+                    Sistem Presensi Digital Berbasis QR Code
                 </p>
             </div>
 
@@ -442,8 +443,10 @@
                 icon: 'error',
                 title: 'Login Gagal!',
                 text: '{{ session('error') }}',
-                confirmButtonColor: '#2563eb',
+                confirmButtonColor: '#DC2626',
                 confirmButtonText: 'Coba Lagi',
+                background: '#1a1a1a',
+                color: '#ffffff',
                 customClass: {
                     popup: 'rounded-2xl',
                     confirmButton: 'rounded-xl px-6 py-2.5 text-sm font-semibold'
@@ -461,6 +464,8 @@
                 showConfirmButton: false,
                 timer: 2500,
                 timerProgressBar: true,
+                background: '#1a1a1a',
+                color: '#ffffff',
                 customClass: {
                     popup: 'rounded-2xl'
                 }

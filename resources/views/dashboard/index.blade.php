@@ -8,7 +8,7 @@
 
     {{-- Welcome Banner --}}
     <div
-        class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 p-6 sm:p-8 mb-8 shadow-lg shadow-primary-500/20">
+        class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-600 via-red-700 to-yellow-500 p-6 sm:p-8 mb-8 shadow-lg shadow-red-500/20">
         <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
             <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="100" cy="100" r="80" stroke="white" stroke-width="2" />
@@ -17,8 +17,8 @@
                 <circle cx="100" cy="100" r="20" stroke="white" stroke-width="2" />
             </svg>
         </div>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
-        <div class="absolute -top-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-black/20 rounded-full blur-2xl"></div>
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-black/20 rounded-full blur-2xl"></div>
 
         <div class="relative z-10">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -26,13 +26,13 @@
                     <h1 class="text-white text-xl sm:text-2xl font-bold tracking-tight">
                         Selamat Datang, {{ Auth::user()->name ?? 'User' }}! 👋
                     </h1>
-                    <p class="text-primary-200 mt-1 text-sm sm:text-base max-w-xl">
+                    <p class="text-white/80 mt-1 text-sm sm:text-base max-w-xl">
                         Sistem E-Presensi CECMataram
                     </p>
                 </div>
                 <div class="flex-shrink-0">
                     <div class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                        <p class="text-primary-200 text-[11px] font-medium uppercase tracking-wider">Tanggal Hari Ini</p>
+                        <p class="text-white/70 text-[11px] font-medium uppercase tracking-wider">Tanggal Hari Ini</p>
                         <p class="text-white font-semibold text-sm mt-0.5">
                             {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
                     </div>
@@ -45,60 +45,60 @@
         {{-- Statistics Cards --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
             {{-- Total Peserta --}}
-            <div class="glass-card rounded-2xl p-5 hover-lift group border border-dark-200/50">
+            <div class="glass-card rounded-2xl p-5 hover-lift group border border-red-600/30 bg-black/50 backdrop-blur-md">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-dark-400 text-xs font-semibold uppercase tracking-wider">Total Peserta</p>
-                        <h3 class="text-3xl font-bold text-dark-800 mt-2">{{ $totalPeserta }}</h3>
-                        <p class="text-dark-400 text-xs mt-1">Peserta terdaftar</p>
+                        <p class="text-yellow-500 text-xs font-semibold uppercase tracking-wider">Total Peserta</p>
+                        <h3 class="text-3xl font-bold text-white mt-2">{{ $totalPeserta }}</h3>
+                        <p class="text-gray-400 text-xs mt-1">Peserta terdaftar</p>
                     </div>
                     <div
-                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform duration-200">
+                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 flex items-center justify-center shadow-lg shadow-red-500/25 group-hover:scale-110 transition-transform duration-200">
                         <i class='bx bx-user text-white text-2xl'></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total tutor --}}
-            <div class="glass-card rounded-2xl p-5 hover-lift group border border-dark-200/50">
+            <div class="glass-card rounded-2xl p-5 hover-lift group border border-red-600/30 bg-black/50 backdrop-blur-md">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-dark-400 text-xs font-semibold uppercase tracking-wider">Total Tutor</p>
-                        <h3 class="text-3xl font-bold text-dark-800 mt-2">{{ $totalTutor }}</h3>
-                        <p class="text-dark-400 text-xs mt-1">Tutor aktif</p>
+                        <p class="text-yellow-500 text-xs font-semibold uppercase tracking-wider">Total Tutor</p>
+                        <h3 class="text-3xl font-bold text-white mt-2">{{ $totalTutor }}</h3>
+                        <p class="text-gray-400 text-xs mt-1">Tutor aktif</p>
                     </div>
                     <div
-                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-110 transition-transform duration-200">
+                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 flex items-center justify-center shadow-lg shadow-red-500/25 group-hover:scale-110 transition-transform duration-200">
                         <i class='bx bx-chalkboard text-white text-2xl'></i>
                     </div>
                 </div>
             </div>
 
             {{-- Total Kelas --}}
-            <div class="glass-card rounded-2xl p-5 hover-lift group border border-dark-200/50">
+            <div class="glass-card rounded-2xl p-5 hover-lift group border border-red-600/30 bg-black/50 backdrop-blur-md">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-dark-400 text-xs font-semibold uppercase tracking-wider">Total Kelas</p>
-                        <h3 class="text-3xl font-bold text-dark-800 mt-2">{{ $totalKelas }}</h3>
-                        <p class="text-dark-400 text-xs mt-1">Kelas tersedia</p>
+                        <p class="text-yellow-500 text-xs font-semibold uppercase tracking-wider">Total Kelas</p>
+                        <h3 class="text-3xl font-bold text-white mt-2">{{ $totalKelas }}</h3>
+                        <p class="text-gray-400 text-xs mt-1">Kelas tersedia</p>
                     </div>
                     <div
-                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25 group-hover:scale-110 transition-transform duration-200">
+                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 flex items-center justify-center shadow-lg shadow-red-500/25 group-hover:scale-110 transition-transform duration-200">
                         <i class='bx bx-building-house text-white text-2xl'></i>
                     </div>
                 </div>
             </div>
 
             {{-- Hadir Hari Ini --}}
-            <div class="glass-card rounded-2xl p-5 hover-lift group border border-dark-200/50">
+            <div class="glass-card rounded-2xl p-5 hover-lift group border border-red-600/30 bg-black/50 backdrop-blur-md">
                 <div class="flex items-start justify-between">
                     <div>
-                        <p class="text-dark-400 text-xs font-semibold uppercase tracking-wider">Hadir Hari Ini</p>
-                        <h3 class="text-3xl font-bold text-dark-800 mt-2">{{ $hadirHariIni }}</h3>
-                        <p class="text-dark-400 text-xs mt-1">Peserta sudah absen</p>
+                        <p class="text-yellow-500 text-xs font-semibold uppercase tracking-wider">Hadir Hari Ini</p>
+                        <h3 class="text-3xl font-bold text-white mt-2">{{ $hadirHariIni }}</h3>
+                        <p class="text-gray-400 text-xs mt-1">Peserta sudah absen</p>
                     </div>
                     <div
-                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 transition-transform duration-200">
+                        class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-yellow-500 flex items-center justify-center shadow-lg shadow-red-500/25 group-hover:scale-110 transition-transform duration-200">
                         <i class='bx bx-check-shield text-white text-2xl'></i>
                     </div>
                 </div>
@@ -106,30 +106,25 @@
         </div>
 
         {{-- Rekap Absensi Table --}}
-        <div class="glass-card rounded-2xl border border-dark-200/50 overflow-hidden">
+        <div class="glass-card rounded-2xl border border-red-600/30 overflow-hidden bg-black/50 backdrop-blur-md">
             {{-- Header + Filter --}}
-            <div class="px-6 py-5 border-b border-dark-100 bg-dark-50/30">
+            <div class="px-6 py-5 border-b border-red-600/20 bg-red-600/5">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
                     <div>
-                        <h3 class="text-lg font-bold text-dark-800">Rekap Absensi Peserta</h3>
-                        <p class="text-sm text-dark-500 mt-1">Seluruh data kehadiran Peserta</p>
+                        <h3 class="text-lg font-bold text-white">Rekap Absensi Peserta</h3>
+                        <p class="text-sm text-gray-400 mt-1">Seluruh data kehadiran Peserta</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('dashboard.export.pdf', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl shadow-lg shadow-rose-500/25 hover:shadow-rose-500/35 transition-all duration-200 hover:-translate-y-0.5"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-xs font-semibold rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/35 transition-all duration-200 hover:-translate-y-0.5"
                             target="_blank">
                             <i class='bx bxs-file-pdf text-base'></i>
-                            Cetak PDF
-                        </a>
-                        <a href="{{ route('dashboard.export.excel', ['bulan' => $bulan, 'tahun' => $tahun, 'search' => $search]) }}"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/35 transition-all duration-200 hover:-translate-y-0.5">
-                            <i class='bx bxs-file text-base'></i>
-                            Export Excel
+                            Preview PDF
                         </a>
                     </div>
                 </div>
 
-                <form action="{{ route('dashboard') }}" method="GET" class="flex flex-col sm:flex-row items-end gap-3">
+                <form id="filterFormDashboard" action="{{ route('dashboard') }}" method="GET" class="flex flex-col sm:flex-row items-end gap-3">
                     <div class="flex-1 w-full">
                         <label class="block text-xs font-medium text-dark-600 mb-1">Cari Peserta</label>
                         <div class="relative">
@@ -138,7 +133,7 @@
                             </div>
                             <input type="text" name="search" value="{{ $search }}"
                                 class="block w-full pl-9 pr-3 py-2 border border-dark-200 rounded-xl bg-white text-sm text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all"
-                                placeholder="Nama / NIS...">
+                                placeholder="Cari Nama...">
                         </div>
                     </div>
                     <div class="w-full sm:w-40">
@@ -172,51 +167,54 @@
             </div>
 
             {{-- Table --}}
-            <div class="overflow-x-auto custom-scrollbar">
+            <div class="overflow-x-auto custom-scrollbar" id="tableContainer">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-dark-50/50 border-b border-dark-200/50">
+                        <tr class="bg-red-600/10 border-b border-red-600/20">
                             <th
-                                class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider w-12 text-center">
+                                class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider w-12 text-center">
                                 No</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">NIS / Nama
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider">Tanggal</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider">Nama Peserta
                             </th>
-                            <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider text-center">
                                 Kelas</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">
-                                Status</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Keterangan
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider">Alamat
                             </th>
-                            <th
-                                class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center w-28">
-                                Aksi</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider text-center">
+                                Status</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-yellow-500 uppercase tracking-wider">Keterangan
+                            </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-dark-200/50">
+                    <tbody class="divide-y divide-red-600/10">
                         @forelse ($absensi as $a)
-                            <tr class="hover:bg-dark-50/50 transition-colors duration-200">
-                                <td class="px-6 py-3.5 text-sm text-dark-600 text-center">
+                            <tr class="hover:bg-red-600/5 transition-colors duration-200">
+                                <td class="px-6 py-3.5 text-sm text-gray-300 text-center">
                                     {{ $absensi->firstItem() + $loop->index }}</td>
-                                <td class="px-6 py-3.5 text-sm text-dark-800">
+                                <td class="px-6 py-3.5 text-sm text-white">
                                     {{ \Carbon\Carbon::parse($a->tanggal)->isoFormat('D MMM Y') }}
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-3">
                                         <div
-                                            class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs uppercase">
+                                            class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-yellow-500 text-white flex items-center justify-center font-bold text-xs uppercase">
                                             {{ substr($a->peserta->nama ?? '?', 0, 1) }}
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-dark-800">{{ $a->peserta->nama ?? '-' }}</p>
+                                            <p class="text-sm font-bold text-white">{{ $a->peserta->nama ?? '-' }}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5 text-center">
                                     <span
-                                        class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200">
+                                        class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-red-600/20 text-yellow-500 border border-red-600/30">
                                         {{ $a->peserta->kelas->nama_kelas ?? '-' }}
                                     </span>
+                                </td>
+                                <td class="px-6 py-3.5 text-sm text-gray-400 max-w-[200px] truncate"
+                                    title="{{ $a->peserta->alamat ?? '-' }}">
+                                    {{ $a->peserta->alamat ?? '-' }}
                                 </td>
                                 <td class="px-6 py-3.5 text-center">
                                     @php $st = strtolower($a->status); @endphp
@@ -246,25 +244,6 @@
                                     title="{{ $a->keterangan }}">
                                     {{ $a->keterangan ?? '-' }}
                                 </td>
-                                <td class="px-6 py-3.5 text-center">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button type="button"
-                                            onclick="openEditAbsensi({{ $a->id }}, '{{ $a->status }}', '{{ addslashes($a->keterangan) }}')"
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
-                                            title="Edit">
-                                            <i class='bx bx-edit-alt text-lg'></i>
-                                        </button>
-                                        <form action="{{ route('dashboard.absensi.delete', $a->id) }}" method="POST"
-                                            class="inline">
-                                            @csrf
-                                            <button type="button"
-                                                class="delete-confirm inline-flex items-center justify-center w-8 h-8 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
-                                                title="Hapus">
-                                                <i class='bx bx-trash text-lg'></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -286,11 +265,13 @@
             </div>
 
             {{-- Pagination --}}
+            <div id="paginationContainer">
             @if ($absensi->hasPages())
                 <div class="px-6 py-4 border-t border-dark-100 bg-dark-50/30">
                     {{ $absensi->links() }}
                 </div>
             @endif
+            </div>
         </div>
 
         {{-- Modal Edit Absensi --}}
@@ -356,27 +337,27 @@
     @if (Auth::user()->role === 'peserta' && isset($peserta))
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {{-- Card Data Diri --}}
-            <div class="lg:col-span-2 glass-card rounded-2xl border border-dark-200/50 p-6">
-                <h3 class="text-lg font-bold text-dark-800 mb-4 flex items-center gap-2">
-                    <i class='bx bx-user-circle text-primary-500 text-2xl'></i>
+            <div class="lg:col-span-2 glass-card rounded-2xl border border-red-600/30 bg-black/50 backdrop-blur-md p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class='bx bx-user-circle text-yellow-500 text-2xl'></i>
                     Profil Peserta
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
-                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Nama Lengkap</p>
-                        <p class="text-dark-800 font-semibold">{{ $peserta->nama }}</p>
+                    <div class="p-4 rounded-xl bg-red-600/10 border border-red-600/20">
+                        <p class="text-xs text-yellow-500 uppercase font-bold tracking-wider mb-1">Nama Lengkap</p>
+                        <p class="text-white font-semibold">{{ $peserta->nama }}</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
-                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Email</p>
-                        <p class="text-dark-800 font-semibold">{{ Auth::user()->email }}</p>
+                    <div class="p-4 rounded-xl bg-red-600/10 border border-red-600/20">
+                        <p class="text-xs text-yellow-500 uppercase font-bold tracking-wider mb-1">Email</p>
+                        <p class="text-white font-semibold">{{ Auth::user()->email }}</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
-                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Kelas</p>
-                        <p class="text-dark-800 font-semibold">{{ $peserta->kelas->nama_kelas ?? '-' }}</p>
+                    <div class="p-4 rounded-xl bg-red-600/10 border border-red-600/20">
+                        <p class="text-xs text-yellow-500 uppercase font-bold tracking-wider mb-1">Kelas</p>
+                        <p class="text-white font-semibold">{{ $peserta->kelas->nama_kelas ?? '-' }}</p>
                     </div>
-                    <div class="p-4 rounded-xl bg-dark-50/50 border border-dark-100">
-                        <p class="text-xs text-dark-400 uppercase font-bold tracking-wider mb-1">Jenis Kelamin</p>
-                        <p class="text-dark-800 font-semibold">
+                    <div class="p-4 rounded-xl bg-red-600/10 border border-red-600/20">
+                        <p class="text-xs text-yellow-500 uppercase font-bold tracking-wider mb-1">Jenis Kelamin</p>
+                        <p class="text-white font-semibold">
                             {{ $peserta->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
                     </div>
                 </div>
@@ -384,58 +365,58 @@
 
             {{-- Card QR Code --}}
             <div
-                class="glass-card rounded-2xl border border-primary-100 bg-gradient-to-b from-white to-primary-50/30 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                class="glass-card rounded-2xl border border-red-600/30 bg-gradient-to-b from-black to-red-600/10 p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group">
                 <!-- Background Decoration -->
                 <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-2xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-primary-500/10">
+                    class="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-full blur-2xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-red-600/10">
                 </div>
                 <div
-                    class="absolute bottom-0 left-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl -ml-8 -mb-8 transition-all duration-500 group-hover:bg-indigo-500/10">
+                    class="absolute bottom-0 left-0 w-24 h-24 bg-yellow-500/5 rounded-full blur-2xl -ml-8 -mb-8 transition-all duration-500 group-hover:bg-yellow-500/10">
                 </div>
 
                 <div class="relative z-10 w-full flex flex-col items-center">
                     <div
-                        class="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-3 shadow-inner">
+                        class="w-10 h-10 rounded-full bg-gradient-to-r from-red-600 to-yellow-500 text-white flex items-center justify-center mb-3 shadow-inner">
                         <i class='bx bx-qr-scan text-xl'></i>
                     </div>
-                    <h3 class="text-sm font-bold text-dark-800 mb-1 uppercase tracking-widest">ID Card Digital</h3>
-                    <p class="text-xs text-dark-500 mb-5">Scan saat kelas untuk absensi</p>
+                    <h3 class="text-sm font-bold text-white mb-1 uppercase tracking-widest">ID Card Digital</h3>
+                    <p class="text-xs text-gray-400 mb-5">Scan saat kelas untuk absensi</p>
 
                     <div
-                        class="relative p-1 rounded-2xl bg-gradient-to-br from-primary-200 via-indigo-100 to-primary-200 mb-6 shadow-sm">
+                        class="relative p-1 rounded-2xl bg-gradient-to-br from-red-600 via-yellow-500 to-red-600 mb-6 shadow-sm">
                         <div
-                            class="bg-white p-3.5 rounded-[14px] transform transition-transform duration-300 group-hover:scale-105">
+                            class="bg-black p-3.5 rounded-[14px] transform transition-transform duration-300 group-hover:scale-105">
                             <img src="{{ asset('qrcodes/' . $peserta->qrcode) }}" alt="QR Code"
                                 class="w-36 h-36 object-contain">
                         </div>
                     </div>
 
                     <a href="{{ route('dashboard.download.idcard') }}"
-                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-1">
+                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-yellow-500 hover:from-red-700 hover:to-yellow-600 text-white rounded-xl font-bold transition-all duration-300 shadow-lg shadow-red-500/25 hover:shadow-red-500/40 hover:-translate-y-1" target="_blank">
                         <i class='bx bxs-file-pdf text-lg animate-bounce'></i>
-                        Cetak ID Card (PDF)
+                        Preview ID Card
                     </a>
                 </div>
             </div>
             {{-- Card Waktu & Tanggal Realtime --}}
             <div
-                class="glass-card rounded-2xl border border-dark-200/50 p-6 flex flex-col justify-center items-center text-center">
-                <div class="w-16 h-16 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-4">
+                class="glass-card rounded-2xl border border-red-600/30 bg-black/50 backdrop-blur-md p-6 flex flex-col justify-center items-center text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-600 to-yellow-500 text-white flex items-center justify-center mb-4">
                     <i class='bx bx-time-five text-3xl'></i>
                 </div>
-                <h2 id="clock" class="text-4xl font-bold text-dark-800 tracking-tight">00:00:00</h2>
-                <p class="text-dark-500 font-medium mt-1">{{ $tanggalHariIni }}</p>
+                <h2 id="clock" class="text-4xl font-bold text-white tracking-tight">00:00:00</h2>
+                <p class="text-gray-400 font-medium mt-1">{{ $tanggalHariIni }}</p>
             </div>
 
             {{-- Card Status Kehadiran Hari Ini --}}
-            <div class="lg:col-span-2 glass-card rounded-2xl border border-dark-200/50 p-6">
+            <div class="lg:col-span-2 glass-card rounded-2xl border border-red-600/30 bg-black/50 backdrop-blur-md p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="text-lg font-bold text-dark-800">Status Kehadiran Anda</h3>
-                        <p class="text-sm text-dark-500">Catatan sistem untuk hari ini</p>
+                        <h3 class="text-lg font-bold text-white">Status Kehadiran Anda</h3>
+                        <p class="text-sm text-gray-400">Catatan sistem untuk hari ini</p>
                     </div>
                     <div
-                        class="px-4 py-2 rounded-xl bg-dark-50 border border-dark-100 text-xs font-bold text-dark-600 uppercase tracking-widest">
+                        class="px-4 py-2 rounded-xl bg-red-600/10 border border-red-600/20 text-xs font-bold text-yellow-500 uppercase tracking-widest">
                         {{ date('Y-m-d') }}
                     </div>
                 </div>
@@ -484,8 +465,10 @@
                                 Belum Absen
                             </span>
                             <h4 class="text-xl font-bold text-dark-800 mt-2">Anda belum melakukan absensi hari ini.</h4>
-                            <p class="text-dark-500 text-sm">Segera lakukan absensi melalui menu <strong>Absensi
-                                    Lokasi</strong> sebelum terlambat.</p>
+                            <p class="text-dark-500 text-sm mb-3">Segera lakukan absensi dengan menscan barcode dari tutor.</p>
+                            <a href="{{ route('scan.absensi') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl font-bold shadow-md shadow-primary-500/30 transition-all text-sm">
+                                <i class='bx bx-qr-scan'></i> Scan Absensi Sekarang
+                            </a>
                         </div>
                     @endif
                 </div>
@@ -497,27 +480,27 @@
 
             {{-- Card Waktu & Tanggal Realtime (Sama dengan style peserta) --}}
             <div
-                class="glass-card rounded-2xl border border-dark-200/50 p-6 flex flex-col justify-center items-center text-center">
-                <div class="w-16 h-16 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-4">
+                class="glass-card rounded-2xl border border-red-600/30 bg-black/50 backdrop-blur-md p-6 flex flex-col justify-center items-center text-center">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-600 to-yellow-500 text-white flex items-center justify-center mb-4">
                     <i class='bx bx-time-five text-3xl'></i>
                 </div>
-                <h2 id="clock" class="text-4xl font-bold text-dark-800 tracking-tight">{{ $jamSekarang }}</h2>
-                <p class="text-dark-500 font-medium mt-1">{{ $tanggalHariIni }}</p>
+                <h2 id="clock" class="text-4xl font-bold text-white tracking-tight">{{ $jamSekarang }}</h2>
+                <p class="text-gray-400 font-medium mt-1">{{ $tanggalHariIni }}</p>
             </div>
 
             {{-- Card Detail tutor --}}
-            <div class="lg:col-span-2 glass-card rounded-2xl border border-dark-200/50 p-6 flex items-center gap-6">
+            <div class="lg:col-span-2 glass-card rounded-2xl border border-red-600/30 bg-black/50 backdrop-blur-md p-6 flex items-center gap-6">
                 <div
-                    class="w-20 h-20 rounded-2xl bg-primary-100 text-primary-600 flex items-center justify-center shadow-sm shrink-0">
+                    class="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-600 to-yellow-500 text-white flex items-center justify-center shadow-sm shrink-0">
                     <i class='bx bx-user-circle text-5xl'></i>
                 </div>
                 <div>
                     <span
-                        class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary-100 text-primary-700 border border-primary-200 uppercase tracking-wider">
+                        class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-600/20 text-yellow-500 border border-red-600/30 uppercase tracking-wider">
                         Profil Pengajar
                     </span>
-                    <h4 class="text-2xl font-bold text-dark-800 mt-1">{{ $tutor->nama }}</h4>
-                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-dark-500">
+                    <h4 class="text-2xl font-bold text-white mt-1">{{ $tutor->nama }}</h4>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-gray-400">
 
                         <p class="flex items-center gap-1.5 text-sm">
                             <i class='bx bx-book-bookmark'></i> Tutor {{ $tutor->mapel }}
@@ -528,20 +511,20 @@
         </div>
 
         {{-- Jadwal Mengajar --}}
-        <div class="glass-card rounded-2xl border border-dark-200/50 overflow-hidden shadow-sm">
-            <div class="p-6 border-b border-dark-100/50 flex items-center justify-between bg-dark-50/30">
+        <div class="glass-card rounded-2xl border border-red-600/30 overflow-hidden shadow-sm bg-black/50 backdrop-blur-md">
+            <div class="p-6 border-b border-red-600/20 flex items-center justify-between bg-red-600/5">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-red-600 to-yellow-500 text-white flex items-center justify-center">
                         <i class='bx bx-calendar-event text-xl'></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-dark-800">Jadwal Mengajar Hari Ini</h3>
-                        <p class="text-xs text-dark-500">Menampilkan jadwal berdasarkan hari
+                        <h3 class="text-lg font-bold text-white">Jadwal Mengajar Hari Ini</h3>
+                        <p class="text-xs text-gray-400">Menampilkan jadwal berdasarkan hari
                             {{ \Carbon\Carbon::now()->locale('id')->dayName }}</p>
                     </div>
                 </div>
                 <div
-                    class="px-4 py-2 rounded-xl bg-white border border-dark-100 text-xs font-bold text-dark-600 uppercase tracking-widest">
+                    class="px-4 py-2 rounded-xl bg-red-600/10 border border-red-600/20 text-xs font-bold text-yellow-500 uppercase tracking-widest">
                     {{ count($jadwalHariIni) }} Sesi
                 </div>
             </div>
@@ -549,31 +532,31 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-dark-50/50">
-                            <th class="px-6 py-4 text-xs font-bold text-dark-400 uppercase tracking-wider">Jam</th>
-                            <th class="px-6 py-4 text-xs font-bold text-dark-400 uppercase tracking-wider">Kelas</th>
-                            <th class="px-6 py-4 text-xs font-bold text-dark-400 uppercase tracking-wider">Mata Pelajaran
+                        <tr class="bg-red-600/5 border-b border-red-600/20">
+                            <th class="px-6 py-4 text-xs font-bold text-yellow-500 uppercase tracking-wider">Jam</th>
+                            <th class="px-6 py-4 text-xs font-bold text-yellow-500 uppercase tracking-wider">Kelas</th>
+                            <th class="px-6 py-4 text-xs font-bold text-yellow-500 uppercase tracking-wider">Mata Pelajaran
                             </th>
-                            <th class="px-6 py-4 text-xs font-bold text-dark-400 uppercase tracking-wider text-right">Aksi
+                            <th class="px-6 py-4 text-xs font-bold text-yellow-500 uppercase tracking-wider text-right">Aksi
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-dark-100/50">
+                    <tbody class="divide-y divide-red-600/10">
                         @forelse($jadwalHariIni as $j)
-                            <tr class="hover:bg-dark-50/30 transition-colors">
+                            <tr class="hover:bg-red-600/5 transition-colors">
                                 <td class="px-6 py-4">
                                     <span
-                                        class="px-3 py-1.5 rounded-lg bg-white border border-dark-100 text-sm font-semibold text-primary-600">
+                                        class="px-3 py-1.5 rounded-lg bg-red-600/10 border border-red-600/20 text-sm font-semibold text-yellow-500">
                                         {{ \Carbon\Carbon::parse($j->jam_mulai)->format('H:i') }} -
                                         {{ \Carbon\Carbon::parse($j->jam_selesai)->format('H:i') }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 font-bold text-dark-800">{{ $j->kelas->nama_kelas }}</td>
-                                <td class="px-6 py-4 text-dark-600">{{ $j->mata_pelajaran }}</td>
+                                <td class="px-6 py-4 font-bold text-white">{{ $j->kelas->nama_kelas }}</td>
+                                <td class="px-6 py-4 text-gray-400">{{ $j->mata_pelajaran }}</td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('absensi.harian') }}"
-                                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 text-white text-xs font-bold hover:bg-primary-700 transition-all shadow-sm shadow-primary-200">
-                                        <i class='bx bx-edit-alt'></i> Absensi
+                                    <a href="{{ route('sesi.kelas.qr', $j->id) }}"
+                                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs font-bold hover:from-primary-700 hover:to-primary-800 transition-all shadow-sm shadow-primary-500/25">
+                                        <i class='bx bx-qr'></i> Buka Sesi
                                     </a>
                                 </td>
                             </tr>
@@ -582,10 +565,10 @@
                                 <td colspan="4" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center">
                                         <div
-                                            class="w-16 h-16 rounded-full bg-dark-50 text-dark-300 flex items-center justify-center mb-3">
+                                            class="w-16 h-16 rounded-full bg-red-600/10 text-yellow-500 flex items-center justify-center mb-3">
                                             <i class='bx bx-calendar-x text-3xl'></i>
                                         </div>
-                                        <p class="text-dark-500 font-medium">Tidak ada jadwal mengajar untuk hari ini.</p>
+                                        <p class="text-gray-400 font-medium">Tidak ada jadwal mengajar untuk hari ini.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -682,6 +665,61 @@
                 });
             });
         });
+
+        // Live Search AJAX
+        let searchTimeout;
+        const searchInput = document.querySelector('input[name="search"]');
+        const filterForm = document.getElementById('filterFormDashboard');
+        const bulanSelect = document.querySelector('select[name="bulan"]');
+        const tahunSelect = document.querySelector('select[name="tahun"]');
+
+        function fetchLiveSearch() {
+            if (!filterForm) return;
+            const url = new URL(filterForm.action);
+            const formData = new FormData(filterForm);
+            const params = new URLSearchParams();
+            for (const pair of formData) {
+                params.append(pair[0], pair[1]);
+            }
+            url.search = params.toString();
+
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Replace table content
+                    const newTable = doc.querySelector('#tableContainer');
+                    if (newTable && document.getElementById('tableContainer')) {
+                        document.getElementById('tableContainer').innerHTML = newTable.innerHTML;
+                    }
+
+                    // Replace pagination content
+                    const newPagination = doc.querySelector('#paginationContainer');
+                    if (newPagination && document.getElementById('paginationContainer')) {
+                        document.getElementById('paginationContainer').innerHTML = newPagination.innerHTML;
+                    }
+                    
+                    // Update URL without reloading to keep pagination links correct
+                    window.history.pushState({}, '', url);
+                });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(fetchLiveSearch, 500); // 500ms delay
+            });
+        }
+        
+        if (bulanSelect) {
+            bulanSelect.addEventListener('change', fetchLiveSearch);
+        }
+        
+        if (tahunSelect) {
+            tahunSelect.addEventListener('change', fetchLiveSearch);
+        }
 
         // Close modal on escape
         document.addEventListener('keydown', function(e) {

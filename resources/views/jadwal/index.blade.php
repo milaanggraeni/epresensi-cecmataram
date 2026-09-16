@@ -67,41 +67,72 @@
         <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-dark-50/50 border-b border-dark-200/50">
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider w-16 text-center">
+                    <tr class="bg-gradient-to-r from-primary-600 to-primary-700 text-white border-b border-primary-800">
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider w-16 text-center">
                             No</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Kelas</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Hari</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">Jam
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider">Hari</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center">Jam
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">Tutor
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider">Kelas</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center">Tutor
                         </th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">Mata
-                            Pelajaran</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center w-28">
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center">Mata Pelajaran</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center">Ruangan</th>
+                        <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center w-28">
                             Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-dark-200/50">
                     @forelse ($jadwal as $s)
-                        <tr class="hover:bg-dark-50/50 transition-colors duration-200">
-                            <td class="px-6 py-4 text-sm text-dark-600 text-center">
+                        <tr class="hover:bg-gradient-to-r hover:from-primary-50 hover:to-blue-50 transition-all duration-200 border-l-4 border-l-primary-500">
+                            <td class="px-6 py-4 text-sm font-semibold text-primary-600 text-center font-mono">
                                 {{ $jadwal->firstItem() + $loop->index }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800">{{ $s->kelas->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800">{{ $s->hari }}</td>
-
-                            <td class="px-6 py-4 text-sm text-dark-600 text-center">
-                                {{ \Carbon\Carbon::parse($s->jam_mulai)->format('H:i') }} -
-                                {{ \Carbon\Carbon::parse($s->jam_selesai)->format('H:i') }}
+                            <td class="px-6 py-4 text-sm text-dark-800 font-medium whitespace-nowrap">
+                                {{ $s->tanggal ? \Carbon\Carbon::parse($s->tanggal)->isoFormat('DD MMM YYYY') : '-' }}
                             </td>
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800 text-center">{{ $s->tutor->nama }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800 text-center">{{ $s->mata_pelajaran }}
+                            <td class="px-6 py-4 text-sm text-dark-600">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 text-xs font-medium border border-amber-200">
+                                    <i class='bx bx-calendar text-sm'></i>
+                                    {{ $s->hari }}
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-center">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-xs border border-emerald-200 whitespace-nowrap">
+                                    <i class='bx bx-time text-sm'></i>
+                                    {{ \Carbon\Carbon::parse($s->jam_mulai)->format('H:i') }} -
+                                    {{ \Carbon\Carbon::parse($s->jam_selesai)->format('H:i') }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-dark-800">
+                                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
+                                    <i class='bx bx-building text-sm'></i>
+                                    {{ $s->kelas->nama_kelas }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-dark-800 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                                        {{ strtoupper(substr($s->tutor->nama, 0, 1)) }}
+                                    </div>
+                                    <span class="text-xs whitespace-nowrap">{{ $s->tutor->nama }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium text-dark-800 text-center">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 text-xs font-medium border border-purple-200">
+                                    <i class='bx bx-book text-sm'></i>
+                                    {{ $s->mata_pelajaran }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-dark-800 text-center">
+                                {{ $s->ruangan ?? '-' }}
                             </td>
 
                             <td class="px-6 py-4 text-sm text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     <button onclick="editJadwal('{{ $s->id }}')"
-                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700 transition-colors duration-200"
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700 hover:shadow-md transition-all duration-200"
                                         title="Edit Data">
                                         <i class='bx bx-edit-alt text-lg'></i>
                                     </button>
@@ -109,7 +140,7 @@
                                         class="inline">
                                         @csrf
                                         <button type="button"
-                                            class="delete-confirm inline-flex items-center justify-center w-8 h-8 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 transition-colors duration-200"
+                                            class="delete-confirm inline-flex items-center justify-center w-8 h-8 rounded-lg text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 hover:shadow-md transition-all duration-200"
                                             title="Hapus Data">
                                             <i class='bx bx-trash text-lg'></i>
                                         </button>
@@ -190,9 +221,10 @@
                                     <div class="md:col-span-2">
                                         <label for="mata_pelajaran" class="block text-sm font-medium text-dark-700 mb-1.5">Mata
                                             Pelajaran</label>
-                                        <input type="text" name="mata_pelajaran" id="mata_pelajaran" required readonly
-                                            class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-dark-100 text-dark-500 focus:outline-none cursor-not-allowed transition-all duration-200"
-                                            placeholder="Pilih tutor terlebih dahulu">
+                                        <select name="mata_pelajaran" id="mata_pelajaran" required
+                                            class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200">
+                                            <option value="">Pilih tutor terlebih dahulu</option>
+                                        </select>
                                     </div>
 
                                     {{-- Pilih Kelas --}}
@@ -208,6 +240,14 @@
                                         </select>
                                     </div>
 
+                                    {{-- Tanggal --}}
+                                    <div>
+                                        <label for="tanggal"
+                                            class="block text-sm font-medium text-dark-700 mb-1.5">Tanggal</label>
+                                        <input type="text" name="tanggal" id="tanggal" placeholder="Pilih Tanggal"
+                                            class="datepicker block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200">
+                                    </div>
+
                                     {{-- Hari --}}
                                     <div>
                                         <label for="hari"
@@ -221,7 +261,16 @@
                                             <option value="Kamis">Kamis</option>
                                             <option value="Jumat">Jumat</option>
                                             <option value="Sabtu">Sabtu</option>
+                                            <option value="Minggu">Minggu</option>
                                         </select>
+                                    </div>
+
+                                    {{-- Ruangan --}}
+                                    <div class="md:col-span-2">
+                                        <label for="ruangan"
+                                            class="block text-sm font-medium text-dark-700 mb-1.5">Ruangan</label>
+                                        <input type="text" name="ruangan" id="ruangan" placeholder="Contoh: A1, Lab Komputer"
+                                            class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200">
                                     </div>
 
                                     {{-- Jam Mulai --}}
@@ -302,6 +351,11 @@
 
 @push('scripts')
     <script>
+        flatpickr(".datepicker", {
+            dateFormat: "Y-m-d",
+            allowInput: false
+        });
+
         flatpickr(".timepicker", {
             enableTime: true,
             noCalendar: true,
@@ -311,13 +365,24 @@
 
         function updateMapel() {
             const selectTutor = document.getElementById('tutor_id');
-            const inputMapel = document.getElementById('mata_pelajaran');
+            const selectMapel = document.getElementById('mata_pelajaran');
 
             const selectedOption = selectTutor.options[selectTutor.selectedIndex];
+            const mapelString = selectedOption.getAttribute('data-mapel') || '';
 
-            const mapel = selectedOption.getAttribute('data-mapel');
+            // Clear existing options
+            selectMapel.innerHTML = '<option value="">-- Pilih Mata Pelajaran --</option>';
 
-            inputMapel.value = mapel;
+            if (mapelString) {
+                // Split by comma and remove whitespace
+                const mapels = mapelString.split(',').map(m => m.trim()).filter(m => m !== '');
+                mapels.forEach(mapel => {
+                    const option = document.createElement('option');
+                    option.value = mapel;
+                    option.textContent = mapel;
+                    selectMapel.appendChild(option);
+                });
+            }
         }
 
         function openModal(modalId) {
@@ -403,7 +468,12 @@
                 .then(html => {
                     document.getElementById('loadeditform').innerHTML = html;
 
-                    // Inisialisasi ulang flatpickr untuk input jam di dalam modal
+                    // Inisialisasi ulang flatpickr
+                    flatpickr(".datepicker", {
+                        dateFormat: "Y-m-d",
+                        allowInput: false
+                    });
+                    
                     flatpickr(".timepicker", {
                         enableTime: true,
                         noCalendar: true,
@@ -473,15 +543,28 @@
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'tutor_id_edit') {
                 const selectTutor = e.target;
-                const inputMapel = document.getElementById('mata_pelajaran_edit');
+                const selectMapel = document.getElementById('mata_pelajaran_edit');
 
                 // Ambil atribut data-mapel dari option yang dipilih
                 const selectedOption = selectTutor.options[selectTutor.selectedIndex];
-                const mapel = selectedOption.getAttribute('data-mapel');
+                const mapelString = selectedOption.getAttribute('data-mapel') || '';
 
-                if (inputMapel) {
-                    inputMapel.value = mapel || '';
-                    console.log("Mapel diupdate ke: " + mapel); // Untuk debugging
+                if (selectMapel) {
+                    const currentSelectedMapel = selectMapel.value;
+                    selectMapel.innerHTML = '<option value="">Pilih Mata Pelajaran</option>';
+
+                    if (mapelString) {
+                        const mapels = mapelString.split(',').map(m => m.trim()).filter(m => m !== '');
+                        mapels.forEach(mapel => {
+                            const option = document.createElement('option');
+                            option.value = mapel;
+                            option.textContent = mapel;
+                            if (mapel === currentSelectedMapel) {
+                                option.selected = true;
+                            }
+                            selectMapel.appendChild(option);
+                        });
+                    }
                 }
             }
         });

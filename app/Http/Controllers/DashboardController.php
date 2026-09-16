@@ -41,8 +41,7 @@ class DashboardController extends Controller
 
             if ($search) {
                 $query->whereHas('peserta', function ($q) use ($search) {
-                    $q->where('nama', 'LIKE', '%' . $search . '%')
-                        ->orWhere('nis', 'LIKE', '%' . $search . '%');
+                    $q->where('nama', 'LIKE', '%' . $search . '%');
                 });
             }
 
@@ -133,8 +132,7 @@ class DashboardController extends Controller
 
         if ($search) {
             $query->whereHas('peserta', function ($q) use ($search) {
-                $q->where('nama', 'LIKE', '%' . $search . '%')
-                    ->orWhere('nis', 'LIKE', '%' . $search . '%');
+                $q->where('nama', 'LIKE', '%' . $search . '%');
             });
         }
 
@@ -144,7 +142,7 @@ class DashboardController extends Controller
         $pdf = Pdf::loadView('exports.absensi-pdf', compact('absensi', 'bulan', 'tahun', 'search'))
             ->setPaper('a4', 'landscape');
 
-        return $pdf->download("Rekap_Absensi_{$namaBulan}_{$tahun}.pdf");
+        return $pdf->stream("Rekap_Absensi_{$namaBulan}_{$tahun}.pdf");
     }
 
     /**
@@ -180,6 +178,6 @@ class DashboardController extends Controller
         $pdf = Pdf::loadView('exports.id-card-pdf', compact('peserta'))
             ->setPaper([0, 0, 240, 370], 'portrait');
 
-        return $pdf->download("ID_Card_" . \Illuminate\Support\Str::slug($peserta->nama) . ".pdf");
+        return $pdf->stream("ID_Card_" . \Illuminate\Support\Str::slug($peserta->nama) . ".pdf");
     }
 }

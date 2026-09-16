@@ -12,19 +12,7 @@
                     placeholder="Nama Kelas" required>
             </div>
         </div>
-        <div>
-            <label for="jumlah_peserta_edit" class="block text-sm font-medium text-dark-700 mb-1.5">Jumlah
-                Peserta</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class='bx bx-group text-dark-400 text-lg'></i>
-                </div>
-                <input type="number" name="jumlah_peserta" id="jumlah_peserta_edit"
-                    value="{{ $kelas->jumlah_peserta }}"
-                    class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
-                    placeholder="Jumlah Peserta" required>
-            </div>
-        </div>
+
         <div class="md:col-span-2">
             <label for="wali_kelas_edit" class="block text-sm font-medium text-dark-700 mb-1.5">Wali Kelas</label>
             <div class="relative">

@@ -77,11 +77,47 @@
             </div>
         </div>
 
+        {{-- Filter Form --}}
+        <div class="mb-6 bg-dark-50/30 p-4 rounded-xl border border-dark-100">
+            <form action="{{ route('riwayatkehadiran') }}" method="GET" class="flex flex-col sm:flex-row items-end gap-4">
+                <div class="w-full sm:w-auto flex-1">
+                    <label class="block text-sm font-medium text-dark-600 mb-1.5">Bulan</label>
+                    <select name="bulan"
+                        class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200">
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
+                                {{ (isset($bulanIni) ? $bulanIni : date('m')) == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::createFromDate(null, $i, 1)->isoFormat('MMMM') }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="w-full sm:w-auto flex-1">
+                    <label class="block text-sm font-medium text-dark-600 mb-1.5">Tahun</label>
+                    <select name="tahun"
+                        class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-white focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200">
+                        @for ($y = date('Y'); $y >= date('Y') - 3; $y--)
+                            <option value="{{ $y }}" {{ (isset($tahunIni) ? $tahunIni : date('Y')) == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="w-full sm:w-auto">
+                    <button type="submit"
+                        class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium rounded-xl shadow-lg shadow-primary-500/30 hover:shadow-primary-500/40 transition-all duration-200 flex items-center justify-center gap-2">
+                        <i class='bx bx-filter-alt text-lg'></i>
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
         {{-- Filter Informasi --}}
         <div class="mb-4 flex items-center gap-2 text-sm text-dark-500 bg-dark-50/50 p-3 rounded-xl border border-dark-100">
             <i class='bx bx-info-circle text-primary-500 text-base'></i>
             Statistik di atas menjumlahkan kehadiran Anda pada bulan
-            <strong>{{ \Carbon\Carbon::now()->isoFormat('MMMM Y') }}</strong>.
+            <strong>{{ \Carbon\Carbon::createFromDate(isset($tahunIni) ? $tahunIni : date('Y'), isset($bulanIni) ? $bulanIni : date('m'), 1)->isoFormat('MMMM Y') }}</strong>.
         </div>
 
 
@@ -90,15 +126,13 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-dark-50/50 border-b border-dark-200/50">
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider w-16 text-center">
-                            No</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider w-16 text-center">No</th>
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Tanggal</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Hari</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Jam Masuk</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Kelas & Pelajaran</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Jadwal (Hari & Jam)</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Tutor</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Jam Scan</th>
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Keterangan</th>
-                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">
-                            Lokasi Geo</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-dark-200/50">
@@ -110,17 +144,42 @@
                             <td class="px-6 py-4 text-sm font-medium text-dark-800">
                                 {{ \Carbon\Carbon::parse($log->tanggal)->isoFormat('dddd, D MMMM Y') }}
                             </td>
-                            {{-- Hari --}}
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800">
-                                {{ \Carbon\Carbon::parse($log->tanggal)->isoFormat('dddd') }}
+                            
+                            {{-- Kelas & Pelajaran --}}
+                            <td class="px-6 py-4 text-sm text-dark-800">
+                                @if($log->jadwal)
+                                    <div class="font-bold">{{ $log->jadwal->kelas->nama_kelas ?? '-' }}</div>
+                                    <div class="text-xs text-dark-500">{{ $log->jadwal->mata_pelajaran }}</div>
+                                @else
+                                    <span class="text-dark-400 italic">-</span>
+                                @endif
                             </td>
-                            {{-- Jam Masuk --}}
+                            
+                            {{-- Jadwal (Hari & Jam) --}}
+                            <td class="px-6 py-4 text-sm text-dark-800">
+                                @if($log->jadwal)
+                                    <div>{{ $log->jadwal->hari }}</div>
+                                    <div class="text-xs text-dark-500">{{ date('H:i', strtotime($log->jadwal->jam_mulai)) }} - {{ date('H:i', strtotime($log->jadwal->jam_selesai)) }}</div>
+                                @else
+                                    <span class="text-dark-400 italic">-</span>
+                                @endif
+                            </td>
+                            
+                            {{-- Tutor --}}
+                            <td class="px-6 py-4 text-sm text-dark-800">
+                                {{ $log->jadwal->tutor->nama ?? '-' }}
+                            </td>
+                            
+                            {{-- Jam Scan --}}
                             <td class="px-6 py-4 text-sm text-dark-600">
                                 @if ($log->jam_masuk)
                                     <span
                                         class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-100 text-dark-700">
                                         <i class='bx bx-time'></i>{{ date('H:i', strtotime($log->jam_masuk)) }} WIB
                                     </span>
+                                    @if($log->keterangan && $log->keterangan !== '-')
+                                        <div class="text-[10px] text-dark-500 mt-1 max-w-[150px] truncate" title="{{ $log->keterangan }}">{{ $log->keterangan }}</div>
+                                    @endif
                                 @else
                                     <span class="text-dark-400 italic text-xs">-</span>
                                 @endif
@@ -148,26 +207,6 @@
                                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
                                         <i class='bx bx-x-circle text-sm'></i> Alfa
                                     </span>
-                                @endif
-                            </td>
-
-                            {{-- Keterangan --}}
-                            <td class="px-6 py-4 text-sm text-dark-600 max-w-[200px] truncate"
-                                title="{{ $log->keterangan }}">
-                                {{ $log->keterangan ?? '-' }}
-                            </td>
-
-                            {{-- Geolocation Pin --}}
-                            <td class="px-6 py-4 text-sm text-center">
-                                @if ($log->latitude && $log->longitude)
-                                    <a href="https://maps.google.com/?q={{ $log->latitude }},{{ $log->longitude }}"
-                                        target="_blank"
-                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary-600 bg-primary-50 hover:bg-primary-100 transition-colors duration-200"
-                                        title="Buka Maps">
-                                        <i class='bx bx-map-pin text-lg'></i>
-                                    </a>
-                                @else
-                                    <span class="text-dark-300"><i class='bx bx-minus'></i></span>
                                 @endif
                             </td>
                         </tr>

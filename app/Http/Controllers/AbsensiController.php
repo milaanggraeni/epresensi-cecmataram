@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use App\Models\Jadwal;
-use App\Models\LokasiSekolah;
-use App\Models\HariLibur;
 use App\Models\Peserta;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
@@ -18,173 +16,135 @@ class AbsensiController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $peserta = null;
 
         $peserta = Peserta::with('kelas')->where('user_id', $user->id)->first();
-
 
         if (!$peserta) {
             return redirect()->route('dashboard')->with('error', 'Data peserta tidak ditemukan.');
         }
 
-        // Cek Hari Libur
-        $hariLibur = HariLibur::whereDate('tanggal', date('Y-m-d'))->first();
-        if ($hariLibur) {
-            // Cek apakah sudah digenerate absensi libur untuk hari ini
-            $cekLiburGenerated = Absensi::whereDate('tanggal', date('Y-m-d'))
-                ->where('status', 'Libur')
-                ->exists();
-
-            if (!$cekLiburGenerated) {
-                // Generate absensi libur untuk semua peserta
-                $semuaPeserta = Peserta::all();
-                $dataAbsensi = [];
-                $now = now();
-                foreach ($semuaPeserta as $p) {
-                    $sudahAda = Absensi::where('peserta_id', $p->id)
-                        ->whereDate('tanggal', date('Y-m-d'))
-                        ->exists();
-                    if (!$sudahAda) {
-                        $dataAbsensi[] = [
-                            'peserta_id' => $p->id,
-                            'tanggal' => date('Y-m-d'),
-                            'jam_masuk' => null,
-                            // 'jam_keluar' => null,
-                            'status' => 'hadir',
-                            'keterangan' => 'hadir ' . $hariLibur->keterangan,
-                            'created_at' => $now,
-                            'updated_at' => $now,
-                        ];
-                    }
-                }
-                if (count($dataAbsensi) > 0) {
-                    Absensi::insert($dataAbsensi);
-                }
-            }
-
-            $absenHariIni = Absensi::where('peserta_id', $peserta->id)
-                ->whereDate('tanggal', date('Y-m-d'))
-                ->first();
-
-            $lokasiSekolah = LokasiSekolah::first();
-            return view('absensi.index', compact('peserta', 'lokasiSekolah', 'absenHariIni', 'hariLibur'));
-        }
-
-        $lokasiSekolah = LokasiSekolah::first();
-        if (!$lokasiSekolah) {
-            return redirect()->route('dashboard')->with('error', 'Koordinat Lokasi Sekolah belum diatur oleh Admin.');
-        }
-
+        // Cek absensi hari ini
         $absenHariIni = Absensi::where('peserta_id', $peserta->id)
             ->whereDate('tanggal', date('Y-m-d'))
             ->first();
 
-        $hariLibur = null;
-        return view('absensi.index', compact('peserta', 'lokasiSekolah', 'absenHariIni', 'hariLibur'));
+        // Riwayat kehadiran bulan ini
+        $riwayatBulanIni = Absensi::where('peserta_id', $peserta->id)
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        // Statistik bulan ini
+        $bulanIni = date('m');
+        $tahunIni = date('Y');
+        $baseQuery = Absensi::where('peserta_id', $peserta->id)
+            ->whereMonth('tanggal', $bulanIni)
+            ->whereYear('tanggal', $tahunIni);
+
+        $hadirCount = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['hadir'])->count();
+        $izinCount  = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['izin'])->count();
+        $sakitCount = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['sakit'])->count();
+        $alpaCount  = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['alfa'])->count();
+
+        $rekap = [
+            'hadir' => $hadirCount,
+            'izin'  => $izinCount,
+            'sakit' => $sakitCount,
+            'alpa'  => $alpaCount,
+        ];
+
+        return view('absensi.index', compact('peserta', 'absenHariIni', 'riwayatBulanIni', 'rekap'));
     }
 
+    /**
+     * Store absensi via QR scan (called by tutor)
+     */
     public function store(Request $request)
     {
         $user = Auth::user();
-        $peserta = Peserta::where('user_id', $user->id)->first();
 
-        if (!$peserta) {
-            return response()->json(['success' => false, 'message' => 'Anda bukan peserta'], 403);
+        // Hanya tutor yang bisa scan absensi
+        if ($user->role !== 'tutor') {
+            return response()->json(['success' => false, 'message' => 'Hanya tutor yang dapat melakukan absensi.'], 403);
         }
 
-        $lokasiSekolah = LokasiSekolah::first();
-        if (!$lokasiSekolah) {
-            return response()->json(['success' => false, 'message' => 'Lokasi sekolah belum diatur'], 500);
-        }
-
-        // Cek apakah sudah absen hari ini
-        $cekAbsen = Absensi::where('peserta_id', $peserta->id)
-            ->whereDate('tanggal', date('Y-m-d'))
-            ->exists();
-
-        if ($cekAbsen) {
-            return response()->json(['success' => false, 'message' => 'Anda sudah melakukan absensi hari ini.'], 400);
-        }
-
-        $lat = $request->latitude;
-        $lng = $request->longitude;
         $scannedQr = $request->qrcode;
-
-        if (!$lat || !$lng) {
-            return response()->json(['success' => false, 'message' => 'Lokasi Anda tidak terdeteksi.'], 400);
-        }
+        $jadwalId = $request->jadwal_id;
 
         if (!$scannedQr) {
             return response()->json(['success' => false, 'message' => 'QR Code wajib dipindai.'], 400);
         }
 
-        $pesertaQr = str_replace('.svg', '', $peserta->qrcode);
-
-        if ($scannedQr !== $pesertaQr) {
-            return response()->json(['success' => false, 'message' => 'QR Code tidak valid atau bukan milik Anda!'], 400);
+        if (!$jadwalId) {
+            return response()->json(['success' => false, 'message' => 'Jadwal belum dipilih.'], 400);
         }
 
-        // Haversine formula backend validation
-        $earthRadius = 6371000; // in meters
-        $latFrom = deg2rad($lokasiSekolah->latitude);
-        $lonFrom = deg2rad($lokasiSekolah->longitude);
-        $latTo = deg2rad($lat);
-        $lonTo = deg2rad($lng);
+        // Cari peserta berdasarkan QR code
+        $peserta = Peserta::where('qrcode', $scannedQr . '.svg')
+            ->orWhere('qrcode', $scannedQr)
+            ->first();
 
-        $latDelta = $latTo - $latFrom;
-        $lonDelta = $lonTo - $lonFrom;
+        if (!$peserta) {
+            return response()->json(['success' => false, 'message' => 'QR Code tidak valid. Peserta tidak ditemukan.'], 400);
+        }
 
-        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-        $distance = $angle * $earthRadius;
+        // Cek apakah sudah absen di jadwal ini
+        $cekAbsen = Absensi::where('peserta_id', $peserta->id)
+            ->where('jadwal_id', $jadwalId)
+            ->exists();
 
-        if ($distance > $lokasiSekolah->radius) {
+        if ($cekAbsen) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda berada di luar jangkauan lokasi sekolah (' . round($distance) . ' meter).'
+                'message' => 'Peserta sudah melakukan absensi pada jadwal ini.'
             ], 400);
         }
 
-        Absensi::create([
+        $absensi = Absensi::create([
             'peserta_id' => $peserta->id,
+            'jadwal_id' => $jadwalId,
             'tanggal' => date('Y-m-d'),
             'jam_masuk' => date('H:i:s'),
             'status' => 'Hadir',
-            'keterangan' => 'Hadir',
-            'latitude' => $lat,
-            'longitude' => $lng,
+            'keterangan' => 'Hadir via scan tutor',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Absensi berhasil tersimpan.'
+            'message' => 'Absensi ' . $peserta->nama . ' berhasil tercatat.',
+            'peserta_id' => $peserta->id,
+            'peserta_nama' => $peserta->nama,
+            'peserta_kelas' => $peserta->kelas->nama_kelas ?? '-',
+            'jam_masuk' => $absensi->jam_masuk,
+            'keterangan' => $absensi->keterangan,
         ]);
     }
 
 
-    public function riwayatKehadiran()
+    public function riwayatKehadiran(Request $request)
     {
         $user = Auth::user();
         $peserta = null;
 
-
-
         $peserta = \App\Models\Peserta::where('user_id', $user->id)->first();
-
 
         if (!$peserta) {
             return redirect()->route('dashboard')->with('error', 'Data peserta tidak ditemukan.');
         }
 
-        // 2. Ambil Riwayat Keseluruhan
-        $riwayat = Absensi::where('peserta_id', $peserta->id)
+        $bulanIni = $request->bulan ?? date('m');
+        $tahunIni = $request->tahun ?? date('Y');
+
+        // 2. Ambil Riwayat Keseluruhan berdasarkan filter
+        $riwayat = Absensi::with(['jadwal.kelas', 'jadwal.tutor'])
+            ->where('peserta_id', $peserta->id)
+            ->whereMonth('tanggal', $bulanIni)
+            ->whereYear('tanggal', $tahunIni)
             ->orderBy('tanggal', 'desc')
             ->get();
 
         // 3. Statistik Bulanan
-        $bulanIni = date('m');
-        $tahunIni = date('Y');
-
         // Helper untuk query status
         $baseQuery = Absensi::where('peserta_id', $peserta->id)
             ->whereMonth('tanggal', $bulanIni)
@@ -195,31 +155,16 @@ class AbsensiController extends Controller
         $sakitCount = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['sakit'])->count();
         $alpaCount  = (clone $baseQuery)->whereRaw('LOWER(status) = ?', ['alfa'])->count();
 
-        // 4. Perhitungan Hari Efektif (Menghindari Alpa manual yang tidak terinput)
-        $startDate = \Carbon\Carbon::now()->startOfMonth();
-        $endDate = \Carbon\Carbon::now();
-        $hariEfektif = 0;
-
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            // Asumsi hari minggu libur
-            if ($currentDate->dayOfWeek !== \Carbon\Carbon::SUNDAY) {
-                $hariEfektif++;
-            }
-            $currentDate->addDay();
-        }
-
-        $totalTercatat = $hadirCount + $izinCount + $sakitCount + $alpaCount;
-        $calculatedAlpa = max(0, $hariEfektif - $totalTercatat);
-
+        // 4. Perhitungan Alpa: hanya dari hari yang sudah terjadi
+        // Tidak perlu calculate alpa, gunakan nilai dari DB saja
         $rekap = [
             'hadir' => $hadirCount,
             'izin'  => $izinCount,
             'sakit' => $sakitCount,
-            'alpa'  => $alpaCount + $calculatedAlpa,
+            'alpa'  => $alpaCount,
         ];
 
-        return view('absensi.riwayat-kehadiran', compact('riwayat', 'rekap', 'peserta'));
+        return view('absensi.riwayat-kehadiran', compact('riwayat', 'rekap', 'peserta', 'bulanIni', 'tahunIni'));
     }
 
     public function absensiHarian()
@@ -252,7 +197,16 @@ class AbsensiController extends Controller
             ->with('kelas')
             ->get();
 
-        $kelasIds = $jadwalHariIni->pluck('kelas_id')->unique();
+        // Ambil semua kelas yang diampu tutor ini (tidak hanya hari ini)
+        $semuaJadwal = Jadwal::where('tutor_id', $tutor->id)
+            ->with('kelas')
+            ->get();
+        $kelasIds = $semuaJadwal->pluck('kelas_id')->unique();
+
+        // Jika tidak ada kelas sama sekali, gunakan kelas dari jadwal hari ini
+        if ($kelasIds->isEmpty()) {
+            $kelasIds = $jadwalHariIni->pluck('kelas_id')->unique();
+        }
 
         // Ambil semua peserta di kelas tersebut berserta absensi HARI INI
         $pesertas = Peserta::whereIn('kelas_id', $kelasIds)
@@ -297,79 +251,67 @@ class AbsensiController extends Controller
         return redirect()->back()->with('success', 'Status absensi berhasil diperbarui.');
     }
 
+    public function deleteHarian(Request $request)
+    {
+        $request->validate([
+            'peserta_id' => 'required|exists:pesertas,id',
+        ]);
+
+        $tanggalInfo = date('Y-m-d');
+
+        $absensi = Absensi::where('peserta_id', $request->peserta_id)
+            ->whereDate('tanggal', $tanggalInfo)
+            ->first();
+
+        if ($absensi) {
+            $absensi->delete();
+            return redirect()->back()->with('success', 'Data absensi berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', 'Data absensi tidak ditemukan.');
+    }
+
     public function rekapAbsensi(Request $request)
     {
-        $bulan = $request->bulan ?? date('m');
-        $tahun = $request->tahun ?? date('Y');
+        $query = Absensi::with(['peserta.kelas', 'jadwal.tutor', 'jadwal.kelas']);
 
-        $pesertas = Peserta::with('kelas')
-            ->orderByDesc(
-                Absensi::selectRaw('MAX(tanggal)')
-                    ->whereColumn('peserta_id', 'pesertas.id')
-                    ->whereMonth('tanggal', $bulan)
-                    ->whereYear('tanggal', $tahun)
-            )
-            ->orderBy('nama')
-            ->get();
-
-        // Hitung hari efektif (kecuali Minggu) di bulan tersebut sampai hari ini atau akhir bulan
-        $startDate = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->startOfMonth();
-        $endDate = ($bulan == date('m') && $tahun == date('Y'))
-            ? \Carbon\Carbon::now()
-            : \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->endOfMonth();
-
-        $hariEfektif = 0;
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            if ($currentDate->dayOfWeek !== \Carbon\Carbon::SUNDAY) {
-                $hariEfektif++;
-            }
-            $currentDate->addDay();
+        if ($request->filled('kelas_id')) {
+            $query->whereHas('peserta', function ($q) use ($request) {
+                $q->where('kelas_id', $request->kelas_id);
+            });
         }
 
-        $rekapAll = [];
-        foreach ($pesertas as $s) {
-            $hadir = Absensi::where('peserta_id', $s->id)
-                ->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)
-                ->whereRaw('LOWER(status) = ?', ['hadir'])->count();
-            $izin = Absensi::where('peserta_id', $s->id)
-                ->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)
-                ->whereRaw('LOWER(status) = ?', ['izin'])->count();
-            $sakit = Absensi::where('peserta_id', $s->id)
-                ->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)
-                ->whereRaw('LOWER(status) = ?', ['sakit'])->count();
-            $alfaDb = Absensi::where('peserta_id', $s->id)
-                ->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)
-                ->whereRaw('LOWER(status) = ?', ['alfa'])->count();
-
-            $totalTercatat = $hadir + $izin + $sakit + $alfaDb;
-            $alpa = $alfaDb + max(0, $hariEfektif - $totalTercatat);
-
-            $rekapAll[] = [
-                'peserta' => $s,
-                'hadir' => $hadir,
-                'izin' => $izin,
-                'sakit' => $sakit,
-                'alpa' => $alpa,
-            ];
+        if ($request->filled('tutor_id')) {
+            $query->whereHas('jadwal', function ($q) use ($request) {
+                $q->where('tutor_id', $request->tutor_id);
+            });
         }
 
-        // Paginate array
-        $page = $request->get('page', 1);
-        $perPage = 10;
-        $totalPeserta = count($rekapAll);
-        $rekap = new LengthAwarePaginator(
-            array_slice($rekapAll, ($page - 1) * $perPage, $perPage),
-            $totalPeserta,
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
+        if ($request->filled('jadwal_id')) {
+            $query->where('jadwal_id', $request->jadwal_id);
+        }
 
-        $namaBulan = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->isoFormat('MMMM Y');
+        if ($request->filled('tanggal')) {
+            $query->whereDate('tanggal', $request->tanggal);
+        }
 
-        return view('absensi.rekap-absensi', compact('rekap', 'bulan', 'tahun', 'namaBulan', 'hariEfektif', 'totalPeserta'));
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $rekap = $query->orderBy('tanggal', 'desc')
+                       ->orderBy('jam_masuk', 'desc')
+                       ->paginate(15)
+                       ->withQueryString();
+
+        $kelasList = \App\Models\Kelas::orderBy('nama_kelas')->get();
+        $tutorList = \App\Models\Tutor::orderBy('nama')->get();
+        $jadwalList = \App\Models\Jadwal::with(['kelas', 'tutor'])->get();
+
+        return view('absensi.rekap-absensi', compact('rekap', 'kelasList', 'tutorList', 'jadwalList'));
     }
+
+
 
     public function rekapPerKelas(Request $request)
     {
@@ -379,18 +321,25 @@ class AbsensiController extends Controller
         $kelasList = \App\Models\Kelas::withCount('pesertas')->orderBy('nama_kelas')->get();
 
         // Buat daftar tanggal efektif (kecuali Minggu)
-        $startDate = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->startOfMonth();
-        $endDate = ($bulan == date('m') && $tahun == date('Y'))
-            ? \Carbon\Carbon::now()
-            : \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->endOfMonth();
+        $systemStartDate = \Carbon\Carbon::create(2026, 6, 1)->startOfDay();
+        
+        $requestedMonthStart = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->startOfMonth();
+        $requestedMonthEnd = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->endOfMonth();
+        $now = \Carbon\Carbon::now()->endOfDay();
+
+        $startDate = $requestedMonthStart->copy()->max($systemStartDate);
+        $endDate = $requestedMonthEnd->copy()->min($now);
 
         $tanggalList = [];
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            if ($currentDate->dayOfWeek !== \Carbon\Carbon::SUNDAY) {
-                $tanggalList[] = $currentDate->format('Y-m-d');
+        
+        if ($startDate->lte($endDate)) {
+            $currentDate = $startDate->copy();
+            while ($currentDate->lte($endDate)) {
+                if ($currentDate->dayOfWeek !== \Carbon\Carbon::SUNDAY) {
+                    $tanggalList[] = $currentDate->format('Y-m-d');
+                }
+                $currentDate->addDay();
             }
-            $currentDate->addDay();
         }
 
         // Urutkan tanggal terbaru di atas

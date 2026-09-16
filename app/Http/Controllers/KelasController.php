@@ -20,7 +20,7 @@ class KelasController extends Controller
             });
         }
 
-        $kelas = $query->orderBy('nama_kelas')->paginate(10)->appends($request->query());
+        $kelas = $query->withCount('pesertas')->orderBy('nama_kelas')->paginate(10)->appends($request->query());
 
         return view('kelas.index', compact('kelas') + ['search' => $request->search ?? '']);
     }
@@ -29,16 +29,14 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama_kelas' => 'required',
-            'jumlah_peserta' => 'required|integer',
             'wali_kelas' => 'required|',
 
         ]);
 
         $kelas = Kelas::create([
             'nama_kelas' => $request->nama_kelas,
-            'jumlah_peserta' => $request->jumlah_peserta,
             'wali_kelas' => $request->wali_kelas,
-
+            'jumlah_peserta' => '0',
         ]);
 
 
@@ -56,7 +54,6 @@ class KelasController extends Controller
         // 1. Validasi Input
         $request->validate([
             'nama_kelas'   => 'required|string|max:255',
-            'jumlah_peserta' => 'required|integer',
             'wali_kelas'   => 'required|string|max:255',
         ]);
 
@@ -65,7 +62,6 @@ class KelasController extends Controller
             $kelas = Kelas::findOrFail($id);
             $kelas->update([
                 'nama_kelas'   => $request->nama_kelas,
-                'jumlah_peserta' => $request->jumlah_peserta,
                 'wali_kelas'   => $request->wali_kelas,
             ]);
 

@@ -76,7 +76,7 @@
                             <td class="px-6 py-4 text-sm text-dark-600 text-center">{{ $kelas->firstItem() + $loop->index }}
                             </td>
                             <td class="px-6 py-4 text-sm font-medium text-dark-800">{{ $s->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-dark-800">{{ $s->jumlah_peserta }} Peserta</td>
+                            <td class="px-6 py-4 text-sm font-medium text-dark-800">{{ $s->pesertas_count }} Peserta</td>
                             <td class="px-6 py-4 text-sm text-dark-600 text-center">{{ $s->wali_kelas ?? '-' }}</td>
                             <td class="px-6 py-4 text-sm text-center">
                                 <div class="flex items-center justify-center gap-2">
@@ -163,18 +163,7 @@
                                                 placeholder="nama Kelas" required autocomplete="off">
                                         </div>
                                     </div>
-                                    <div>
-                                        <label for="jumlah_peserta" class="block text-sm font-medium text-dark-700 mb-1.5">
-                                            Jumlah Peserta</label>
-                                        <div class="relative">
-                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <i class='bx bx-user text-dark-400 text-lg'></i>
-                                            </div>
-                                            <input type="text" name="jumlah_peserta" id="jumlah_peserta"
-                                                class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
-                                                placeholder="Jumlah Peserta" required autocomplete="off">
-                                        </div>
-                                    </div>
+
                                     <div>
                                         <label for="wali_kelas" class="block text-sm font-medium text-dark-700 mb-1.5">
                                             Wali Kelas</label>

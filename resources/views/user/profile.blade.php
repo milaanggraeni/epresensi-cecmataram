@@ -18,8 +18,12 @@
                 {{-- Avatar --}}
                 <div class="flex justify-center mb-4">
                     <div
-                        class="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-primary-500/30">
-                        {{ strtoupper(substr($user->name, 0, 2)) }}
+                        class="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-primary-500/30 overflow-hidden">
+                        @if ($user->foto)
+                            <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto Profil" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                        @endif
                     </div>
                 </div>
                 <h3 class="text-lg font-bold text-dark-800">{{ $user->name }}</h3>
@@ -75,7 +79,7 @@
                     <h3 class="text-base font-bold text-dark-800">Informasi Profil</h3>
                 </div>
                 <div class="p-6">
-                    <form action="{{ route('profile.update') }}" method="POST">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -110,6 +114,32 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="mt-6">
+                            <label for="foto" class="block text-sm font-medium text-dark-700 mb-1.5">Foto Profil</label>
+                            <div class="flex items-end gap-3">
+                                <div class="flex-1">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class='bx bx-image text-dark-400 text-lg'></i>
+                                        </div>
+                                        <input type="file" name="foto" id="foto" accept="image/*"
+                                            class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
+                                            placeholder="Pilih foto...">
+                                    </div>
+                                    <p class="text-xs text-dark-400 mt-1">Format: JPG, PNG, GIF | Max: 2MB</p>
+                                </div>
+                                @if ($user->foto)
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto Profil" class="w-12 h-12 rounded-lg object-cover">
+                                    </div>
+                                @endif
+                            </div>
+                            @error('foto')
+                                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="mt-6 flex justify-end">
                             <button type="submit"
                                 class="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium rounded-xl shadow-lg shadow-primary-500/30 hover:shadow-primary-500/40 transition-all duration-200 flex items-center gap-2">

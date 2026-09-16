@@ -21,7 +21,6 @@
         .header {
             text-align: center;
             margin-bottom: 25px;
-            border-bottom: 3px solid #2563eb;
             padding-bottom: 15px;
         }
 
@@ -127,8 +126,12 @@
 
 <body>
     <div class="header">
-        <h1>DATA Peserta</h1>
-        <h2>Daftar Lengkap Peserta Terdaftar</h2>
+        <h1 style="font-size: 22px; font-weight: bold; text-transform: uppercase;">CEC Kampung Inggris Pare Mataram</h1>
+        <p style="font-size: 11px; margin-bottom: 8px;">
+            Alamat: Jl. Abdul Kadir Munsyi Gang Dahlia No. 16, Punia, Kec. Mataram, Kota Mataram, Nusa Tenggara Barat. 83115<br>
+            Telp: +62 823 4031 1694 | Email: cecoffice9@gmail.com | Web: www.cecmataram.com
+        </p>
+
         @if ($search)
             <p>Filter Pencarian: "{{ $search }}"</p>
         @endif

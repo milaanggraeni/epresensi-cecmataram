@@ -11,16 +11,20 @@ class Absensi extends Model
 
     protected $fillable = [
         'peserta_id',
+        'jadwal_id',
         'tanggal',
         'jam_masuk',
         'status',
         'keterangan',
-        'latitude',
-        'longitude',
     ];
 
     public function peserta()
     {
         return $this->belongsTo(Peserta::class);
+    }
+
+    public function jadwal()
+    {
+        return $this->belongsTo(Jadwal::class);
     }
 }

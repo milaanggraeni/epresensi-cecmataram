@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
@@ -98,12 +99,25 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user->update([
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-        ]);
+        ];
+
+        // Handle photo upload
+        if ($request->hasFile('foto')) {
+            // Delete old photo if exists
+            if ($user->foto && File::exists(storage_path('app/public/' . $user->foto))) {
+                File::delete(storage_path('app/public/' . $user->foto));
+            }
+            $fotoFile = $request->file('foto');
+            $updateData['foto'] = $fotoFile->store('users', 'public');
+        }
+
+        $user->update($updateData);
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('mapel');
             $table->enum('jenis_kelamin', ['L', 'P']);
+             $table->string('alamat');
 
             $table->timestamps();
         });

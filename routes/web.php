@@ -3,14 +3,14 @@
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HariLiburController;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
-use App\Http\Controllers\LokasiSekolahController;
+use App\Http\Controllers\LaporanKehadiranController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,10 +24,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['guest:web'])->group(function () {
+// Landing Page (Public)
+Route::get('/', function () {
+    return view('landing');
+})->name('landing');
 
-    Route::get('/', [AuthController::class, 'index'])->name('login');
-    Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->name('proseslogin');
+// Auth Routes
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->name('proseslogin');
+
+Route::middleware(['guest:web'])->group(function () {
+    // Guest routes if needed
 });
 
 Route::middleware(['auth:web'])->group(function () {
@@ -76,9 +83,7 @@ Route::middleware(['auth:web'])->group(function () {
 
 
 
-    // Lokasi Sekolah
-    Route::get('/lokasi-sekolah', [LokasiSekolahController::class, 'index'])->name('lokasi_sekolah');
-    Route::post('/lokasi-sekolah', [LokasiSekolahController::class, 'update'])->name('lokasi_sekolah.update');
+
 
     // Users
     Route::get('user', [UserController::class, 'index'])->name('user');
@@ -87,6 +92,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/user/{id}', [UserController::class, 'update'])->name('user.update');
     Route::post('/user/delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    // Profile edit page
+    Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
+    // Report routes
+    Route::get('/dashboard/reports/participants', [ReportController::class, 'participantReport'])->name('reports.participants');
+    Route::get('/dashboard/reports/tutors', [ReportController::class, 'tutorReport'])->name('reports.tutors');
 
     // Absensi
     Route::get('/absensi-siswa', [AbsensiController::class, 'index'])->name('absensi');
@@ -95,18 +105,40 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::get('/absensi-siswa/harian', [AbsensiController::class, 'absensiHarian'])->name('absensi.harian');
     Route::post('/absensi-siswa/harian/update', [AbsensiController::class, 'updateHarian'])->name('absensi.harian.update');
+    Route::post('/absensi-siswa/harian/delete', [AbsensiController::class, 'deleteHarian'])->name('absensi.harian.delete');
 
     Route::get('/rekap-absensi', [AbsensiController::class, 'rekapAbsensi'])->name('rekapabsensi');
     Route::get('/rekap-kelas', [AbsensiController::class, 'rekapPerKelas'])->name('rekapkelas');
+    
+    // Jadwal Mengajar Tutor
+    Route::get('/tutor/jadwal', [App\Http\Controllers\TutorJadwalController::class, 'index'])->name('tutor.jadwal');
+    
+    // Rekap Absensi Tutor
+    Route::get('/tutor/rekap-absensi', [App\Http\Controllers\TutorRekapAbsensiController::class, 'index'])->name('tutor.rekap');
+    Route::get('/tutor/rekap-absensi/export-pdf', [App\Http\Controllers\TutorRekapAbsensiController::class, 'exportPdf'])->name('tutor.rekap.pdf.download');
+    Route::get('/tutor/rekap-absensi/stream-pdf', [App\Http\Controllers\TutorRekapAbsensiController::class, 'streamPdf'])->name('tutor.rekap.pdf.stream');
+    
+    // Laporan Kehadiran
+    Route::get('/laporan-kehadiran', [LaporanKehadiranController::class, 'index'])->name('laporan.kehadiran');
+    Route::get('/laporan-kehadiran/peserta', [LaporanKehadiranController::class, 'peserta'])->name('laporan.kehadiran.peserta');
+    Route::get('/laporan-kehadiran/tutor', [LaporanKehadiranController::class, 'tutor'])->name('laporan.kehadiran.tutor');
+    Route::get('/laporan-kehadiran/peserta/export-excel', [LaporanKehadiranController::class, 'exportPesertaExcel'])->name('laporan.kehadiran.peserta.export-excel');
+    Route::get('/laporan-kehadiran/peserta/export-pdf', [LaporanKehadiranController::class, 'exportPesertaPdf'])->name('laporan.kehadiran.peserta.export-pdf');
+    Route::get('/laporan-kehadiran/tutor/export-excel', [LaporanKehadiranController::class, 'exportTutorExcel'])->name('laporan.kehadiran.tutor.export-excel');
+    Route::get('/laporan-kehadiran/tutor/export-pdf', [LaporanKehadiranController::class, 'exportTutorPdf'])->name('laporan.kehadiran.tutor.export-pdf');
+
+    // Scan Absensi (Peserta)
+    Route::get('/scan-absensi', [App\Http\Controllers\ScanAbsensiController::class, 'scanPage'])->name('scan.absensi');
+    Route::post('/scan-absensi/process', [App\Http\Controllers\ScanAbsensiController::class, 'processScan'])->name('scan.absensi.process');
+
+    // Sesi Kelas (Tutor)
+    Route::get('/sesi-kelas', [App\Http\Controllers\SesiKelasController::class, 'index'])->name('sesi.kelas');
+    Route::get('/sesi-kelas/{jadwalId}/qr', [App\Http\Controllers\SesiKelasController::class, 'showQr'])->name('sesi.kelas.qr');
+    Route::post('/sesi-kelas/{jadwalId}/refresh-token', [App\Http\Controllers\SesiKelasController::class, 'refreshToken'])->name('sesi.kelas.refresh');
+    Route::get('/sesi-kelas/{jadwalId}/peserta-hadir', [App\Http\Controllers\SesiKelasController::class, 'pesertaHadir'])->name('sesi.kelas.hadir');
 
     // Izin / Sakit
     Route::get('/izin-siswa', [IzinController::class, 'index'])->name('izin');
     Route::post('/izin-siswa', [IzinController::class, 'store'])->name('izin.store');
 
-    // Hari Libur
-    Route::get('/hari-libur', [HariLiburController::class, 'index'])->name('hariLibur');
-    Route::post('/hari-libur', [HariLiburController::class, 'store'])->name('hariLibur.store');
-    Route::post('/hari-libur/edit', [HariLiburController::class, 'edit'])->name('hariLibur.edit');
-    Route::post('/hari-libur/{id}', [HariLiburController::class, 'update'])->name('hariLibur.update');
-    Route::post('/hari-libur/delete/{id}', [HariLiburController::class, 'destroy'])->name('hariLibur.delete');
 });

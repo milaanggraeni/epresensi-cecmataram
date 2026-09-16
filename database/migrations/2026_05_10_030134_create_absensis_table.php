@@ -25,8 +25,6 @@ return new class extends Migration
                 'libur'
             ])->default('hadir');
             $table->string('keterangan')->nullable();
-            $table->double('latitude')->nullable();
-            $table->double('longitude')->nullable();
 
             $table->timestamps();
         });

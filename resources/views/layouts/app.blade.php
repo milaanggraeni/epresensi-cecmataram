@@ -28,42 +28,67 @@
                     },
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                            950: '#172554',
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdbb74',
+                            400: '#f97316',
+                            500: '#f59e0b',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                            950: '#431407',
                         },
                         accent: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            300: '#86efac',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
+                            50: '#fef8e6',
+                            100: '#fdf1cc',
+                            200: '#fbe399',
+                            300: '#f9d566',
+                            400: '#f59e0b',
+                            500: '#ffd600',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#78350f',
+                            900: '#451a03',
+                        },
+                        red: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdbb74',
+                            400: '#f97316',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                            950: '#431407',
+                        },
+                        yellow: {
+                            50: '#fef8e6',
+                            100: '#fdf1cc',
+                            200: '#fbe399',
+                            300: '#f9d566',
+                            400: '#f59e0b',
+                            500: '#ffd600',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#78350f',
+                            900: '#451a03',
                         },
                         dark: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
+                            50: '#09090b',
+                            100: '#121214',
+                            200: '#1b1b1f',
+                            300: '#27272a',
+                            400: '#52525b',
+                            500: '#a1a1aa',
+                            600: '#d4d4d8',
+                            700: '#e4e4e7',
+                            800: '#f4f4f5',
+                            900: '#ffffff',
+                            950: '#020202',
                         }
                     }
                 }
@@ -89,16 +114,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #1a1a1a;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
+            background: #666;
             border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+            background: #888;
         }
 
         /* Sidebar scrollbar */
@@ -127,10 +152,10 @@
 
         /* Glass morphism card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Gradient background */
@@ -140,7 +165,8 @@
 
         /* Sidebar gradient */
         .sidebar-gradient {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background: linear-gradient(180deg, #0f172a 0%, #1a1a1a 50%, #0f172a 100%);
+            border-right: 1px solid rgba(255, 0, 0, 0.1);
         }
 
         /* Hover lift effect */
@@ -235,7 +261,7 @@
             transform: translateY(-50%);
             width: 3px;
             height: 60%;
-            background: linear-gradient(180deg, #3b82f6, #60a5fa);
+            background: linear-gradient(180deg, #f97316, #eab308);
             border-radius: 0 4px 4px 0;
         }
 
@@ -255,12 +281,96 @@
                 transform: scale(1) translateY(0);
             }
         }
+
+        /* Global Dark Theme Custom Overrides */
+        .bg-white {
+            background-color: #09090b !important;
+        }
+        .text-dark-800 {
+            color: #f4f4f5 !important;
+        }
+        .text-dark-900 {
+            color: #ffffff !important;
+        }
+        .bg-dark-50\/50 {
+            background-color: rgba(24, 24, 27, 0.5) !important;
+        }
+        .bg-dark-50 {
+            background-color: #09090b !important;
+        }
+        .border-dark-100 {
+            border-color: #27272a !important;
+        }
+        .border-dark-200 {
+            border-color: #27272a !important;
+        }
+        .bg-indigo-50 {
+            background-color: rgba(249, 115, 22, 0.1) !important;
+            color: #f59e0b !important;
+        }
+        .bg-indigo-50:hover {
+            background-color: rgba(249, 115, 22, 0.2) !important;
+        }
+        .text-indigo-600 {
+            color: #f59e0b !important;
+        }
+        .bg-rose-50 {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+            color: #ef4444 !important;
+        }
+        .bg-rose-50:hover {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+        }
+        .text-rose-600 {
+            color: #ef4444 !important;
+        }
+        .bg-primary-600 {
+            background: linear-gradient(135deg, #f97316 0%, #eab308 100%) !important;
+            color: #000000 !important;
+            font-weight: 700 !important;
+        }
+        .bg-primary-600:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #ca8a04 100%) !important;
+        }
+        .bg-gradient-to-r.from-primary-600 {
+            background-image: linear-gradient(to right, #f97316, #eab308) !important;
+            color: #000000 !important;
+            font-weight: 700 !important;
+        }
+        .bg-gradient-to-r.from-primary-600:hover {
+            background-image: linear-gradient(to right, #ea580c, #ca8a04) !important;
+        }
+        
+        /* Form input elements */
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"], select, textarea {
+            background-color: #09090b !important;
+            color: #ffffff !important;
+            border-color: #27272a !important;
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+            background-color: #18181b !important;
+            color: #ffffff !important;
+            border-color: #f97316 !important;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        /* Modal background fix */
+        .relative.bg-white {
+            background-color: #09090b !important;
+            border: 1px solid rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        /* Footer dark theme override */
+        footer {
+            background-color: rgba(9, 9, 11, 0.8) !important;
+            border-color: #18181b !important;
+        }
     </style>
 
     @stack('styles')
 </head>
 
-<body class="font-inter bg-dark-50 text-dark-800 antialiased">
+<body class="font-inter bg-black text-white antialiased">
 
     <div id="app" class="flex min-h-screen">
 
@@ -283,11 +393,11 @@
                 {{-- Breadcrumb --}}
                 @hasSection('breadcrumb')
                     <nav class="mb-6 fade-in" aria-label="Breadcrumb">
-                        <ol class="flex items-center gap-2 text-sm text-dark-500">
+                        <ol class="flex items-center gap-2 text-sm text-gray-400">
                             <li class="flex items-center gap-1">
                                 <i class='bx bx-home text-base'></i>
                                 <a href="{{ route('dashboard') }}"
-                                    class="hover:text-primary-600 transition-colors">Dashboard</a>
+                                    class="hover:text-yellow-500 transition-colors">Dashboard</a>
                             </li>
                             @yield('breadcrumb')
                         </ol>

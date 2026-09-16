@@ -62,6 +62,8 @@
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Nama</th>
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Mata Pelajaran
                         </th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">Alamat</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider">No. HP</th>
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center">L/P
                         </th>
                         <th class="px-6 py-4 text-xs font-semibold text-dark-500 uppercase tracking-wider text-center w-28">
@@ -83,6 +85,8 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-sm text-dark-600">{{ $g->mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-dark-600">{{ $g->alamat }}</td>
+                            <td class="px-6 py-4 text-sm text-dark-600">{{ $g->nomor_hp }}</td>
                             <td class="px-6 py-4 text-sm text-dark-600 text-center">{{ $g->jenis_kelamin }}</td>
                             <td class="px-6 py-4 text-sm text-center">
                                 <div class="flex items-center justify-center gap-2">
@@ -105,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="w-16 h-16 mb-4 rounded-full bg-dark-100 flex items-center justify-center">
                                         <i class='bx bx-chalkboard text-3xl text-dark-400'></i>
@@ -154,7 +158,7 @@
 
                         {{-- Body --}}
                         <div class="px-6 py-5">
-                            <form action="{{ route('tutor.store') }}" method="POST" id="frmTutor">
+                            <form action="{{ route('tutor.store') }}" method="POST" id="frmTutor" enctype="multipart/form-data">
                                 @csrf
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -178,10 +182,11 @@
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <i class='bx bx-book text-dark-400 text-lg'></i>
                                             </div>
-                                            <input type="text" name="mapel" id="mapel"
+                                            <textarea name="mapel" id="mapel" rows="3"
                                                 class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
-                                                placeholder="Mata Pelajaran" required autocomplete="off">
+                                                placeholder="Contoh: Matematika, IPA, Bahasa Inggris&#10;(Pisahkan dengan koma jika lebih dari satu)" required></textarea>
                                         </div>
+                                        <p class="text-xs text-dark-400 mt-1">💡 Tutor bisa mengajar beberapa mata pelajaran. Pisahkan dengan koma (,)</p>
                                     </div>
 
                                     <div>
@@ -194,6 +199,38 @@
                                             <option value="L">Laki-laki</option>
                                             <option value="P">Perempuan</option>
                                         </select>
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label for="alamat" class="block text-sm font-medium text-dark-700 mb-1.5">Alamat</label>
+                                        <textarea name="alamat" id="alamat" rows="3"
+                                            class="block w-full px-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
+                                            placeholder="Alamat lengkap" required></textarea>
+                                    </div>
+
+                                    <div>
+                                        <label for="nomor_hp" class="block text-sm font-medium text-dark-700 mb-1.5">Nomor HP</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class='bx bx-phone text-dark-400 text-lg'></i>
+                                            </div>
+                                            <input type="text" name="nomor_hp" id="nomor_hp"
+                                                class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
+                                                placeholder="08xxxxxxxxxx" autocomplete="off">
+                                        </div>
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label for="foto" class="block text-sm font-medium text-dark-700 mb-1.5">Foto Tutor (Opsional)</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class='bx bx-image text-dark-400 text-lg'></i>
+                                            </div>
+                                            <input type="file" name="foto" id="foto" accept="image/*"
+                                                class="block w-full pl-10 pr-3 py-2.5 border border-dark-200 rounded-xl bg-dark-50/50 focus:bg-white text-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all duration-200"
+                                                placeholder="Pilih foto...">
+                                        </div>
+                                        <p class="text-xs text-dark-400 mt-1">Format: JPG, PNG, GIF | Max: 2MB</p>
                                     </div>
 
                                     <div class="md:col-span-2 mt-2">
